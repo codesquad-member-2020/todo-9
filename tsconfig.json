@@ -1,11 +1,13 @@
 {
     "compilerOptions": {
-        "target": "ES6",
+        "target": "es6",
+        "module": "commonjs",
         "moduleResolution": "node",
         "allowJs": true,
         "noEmit": true,
         "strict": true,
         "isolatedModules": false,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": false
     }
 }
