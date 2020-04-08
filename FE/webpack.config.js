@@ -1,6 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+// const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
     entry: './src/ts/index.ts',
@@ -9,8 +9,17 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         publicPath: './'
     },
-    mode: 'development',
-    devtool: 'inline-source-map',
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+                commons: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: "vendors",
+                    chunks: "all",
+                },
+            },
+        },
+    },
     module: {
         rules: [
             {
@@ -30,18 +39,18 @@ module.exports = {
                     }
                 }
             },
-            {
-                test: /\.(css)$/,
-                exclude: /node_modules/,
-                use: [ MiniCssExtractPlugin.loader, 'css-loader' ],
-            },
             // {
-            //     test: /\.css%/,
-            //     use: [
-            //         'style-loader',
-            //         'css-loader'
-            //     ]
+            //     test: /\.(css)$/,
+            //     exclude: /node_modules/,
+            //     use: [ MiniCssExtractPlugin.loader, 'css-loader' ],
             // },
+            {
+                test: /\.css$/,
+                use: [
+                    'style-loader',
+                    'css-loader'
+                ]
+            },
             // {
             //     test: /\.css$/,
             //     use: [
@@ -63,10 +72,9 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './src/view/index.html'
         }),
-        new MiniCssExtractPlugin({
-            filename: '[name].css',
-            chunkFilename: '[name].[id].css'
-          })
-    ]
+        // new MiniCssExtractPlugin({
+        //     filename: '[name].css',
+        //     chunkFilename: '[name].[id].css'
+        //   })
+    ],
 };
-
