@@ -4,10 +4,11 @@ drop table if exists `COLUMN`;
 drop table if exists BOARD;
 drop table if exists USER;
 
-create table if not exists USER
+create table if not exists `USER`
 (
 	ID bigint auto_increment,
 	USERNAME varchar(24) null,
+	PROFILE_IMAGE_URL varchar(500) null,
 	constraint USER_pk
 		primary key (ID)
 );
@@ -51,7 +52,7 @@ create table if not exists `COLUMN`
 create table if not exists CARD
 (
 	ID bigint auto_increment,
-	CONTENTS TEXT null,
+	CONTENTS varchar(500) null,
 	CREATED_AT datetime null,
 	UPDATED_AT datetime null,
 	ARCHIVED_AT datetime null,
@@ -76,8 +77,8 @@ create table if not exists LOG
 	ID bigint auto_increment,
 	ACTION varchar(24) null,
 	TYPE varchar(24) null,
-	BEFORE_CARD_CONTENTS TEXT null,
-	AFTER_CARD_CONTENTS TEXT null,
+	BEFORE_CARD_CONTENTS varchar(500) null,
+	AFTER_CARD_CONTENTS varchar(500) null,
 	BEFORE_CARD_ID bigint null,
 	AFTER_CARD_ID bigint null,
 	FROM_COLUMN_ID bigint null,
