@@ -75,6 +75,9 @@ create table if not exists LOG
 (
 	ID bigint auto_increment,
 	ACTION varchar(24) null,
+	TYPE varchar(24) null,
+	BEFORE_CARD_CONTENTS TEXT null,
+	AFTER_CARD_CONTENTS TEXT null,
 	BEFORE_CARD_ID bigint null,
 	AFTER_CARD_ID bigint null,
 	FROM_COLUMN_ID bigint null,
