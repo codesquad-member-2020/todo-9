@@ -4,7 +4,7 @@ class Activity implements View{
   constructor() {
   }
 
-  render(): void {
+  render(): string {
 
   }
 
