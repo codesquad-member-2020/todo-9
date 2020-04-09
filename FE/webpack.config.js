@@ -19,53 +19,42 @@ module.exports = {
         },
       },
     },
-    module: {
-        rules: [
-            {
-                test: /\.(js|ts)$/,
-                exclude: /(node_modules)/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: [
-                            '@babel/preset-env',
-                            '@babel/preset-typescript',
-                        ],
-                        plugins: [
-                            '@babel/plugin-proposal-class-properties',
-                            '@babel/plugin-proposal-object-rest-spread'
-                        ]
-                    }
-                }
-            },
-            {
-                test: /\.css$/,
-                use: [
-                    'style-loader',
-                    'css-loader'
-                ]
-            },
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(js|ts)$/,
+        exclude: /(node_modules)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              '@babel/preset-env',
+              '@babel/preset-typescript',
+            ],
+            plugins: [
+              '@babel/plugin-proposal-class-properties',
+              '@babel/plugin-proposal-object-rest-spread'
+            ]
+          }
+        }
+      },
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader'
         ]
-    },
-    resolve: {
-        extensions: ['.ts', '.js'],
-    },
-    plugins: [
-        new HtmlWebpackPlugin({
-            template: './src/view/index.html'
-        }),
-    ],
+      },
+    ]
   },
   resolve: {
-    extensions: [".ts", ".js"],
+    extensions: ['.ts', '.js'],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./src/view/index.html",
+      template: './src/view/index.html'
     }),
-    // new MiniCssExtractPlugin({
-    //     filename: '[name].css',
-    //     chunkFilename: '[name].[id].css'
-    //   })
   ],
 };
+
