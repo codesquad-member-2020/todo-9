@@ -1,14 +1,14 @@
-import '../style/style.css';
+import "../style/style.css";
 
-import View from "./view"
-import Activity from './activity'
-import EditNote from './editnote'
-import EditColumn from './editcolumn'
-import { qs$ } from './lib/util';
+import View from "./view";
+import Activity from "./activity";
+import EditNote from "./editnote";
+import EditColumn from "./editcolumn";
+import { qs$, addClass, removeClass } from "./lib/util";
 
 class Column implements View {
   private activity: Activity;
-  private editNote : EditNote;
+  private editNote: EditNote;
   private editColumn: EditColumn;
   private placeHolderVisible: boolean;
 
@@ -21,41 +21,50 @@ class Column implements View {
 
   render(): string {
     return `
+    <div class="header">
+      <div class="header-title">TODO 서비스</div>
+      <div class="menu">menu</div>
+    </div>
+    <div class="column-wrap">
+    </div>
     `;
   }
 
   registerEventListener(): void {
-    qs$(".column-wrap").addEventListener('click', ({target}:Event) => {
+    qs$(".column-wrap").addEventListener("click", ({ target }: Event) => {
       console.log((<HTMLInputElement>target).className);
 
-      //만약 Column 영역의 '+' 버튼이 눌리면
-      //plusBtnClickEventHandler(<HTMLInputElement>target);
+      if ((<HTMLInputElement>target).className === "add") {
+        this.plusBtnClickEventHandler();
+      }
     });
 
-    qs$(".column-wrap").addEventListener('input', ({target}:Event) => {
+    qs$(".card").addEventListener("dblclick", (evt: Event) =>
+      this.cardDoubleClickEventHandler(evt)
+    );
+
+    qs$(".column-wrap").addEventListener("input", ({ target }: Event) => {
       console.log((<HTMLInputElement>target).value);
     });
   }
 
-  receiveInitialData(initialData: any): void {
-    //insertAdjacentHTML 사용
-  }
+  cardDoubleClickEventHandler() {}
+
+  receiveInitialData({ columns }: any): void {}
 
   //Column 영역의 '+' 버튼을 클릭 했을 때 호출되는 핸들러
-  plusBtnClickEventHandler(target: HTMLInputElement): void {
+  plusBtnClickEventHandler(): void {
     //Placeholder 가 닫혀있다면
-      //Placeholder 를 open
+    //Placeholder 를 open
     //Placeholder 가 열려잇다면
-      //Placeholder 를 close
-
-    // if (this.getPlaceHolderVisible() === true) {
-    //   //DOM 조작을 통한 classList remove
-    //   this.setPlaceholderVisible(false);
-    // }
-    // else {
-    //   //DOM 조작을 통한 classList add
-    //   this.setPlaceholderVisible(true);
-    // }
+    //Placeholder 를 close
+    if (this.getPlaceHolderVisible()) {
+      //DOM 조작을 통한 classList remove
+      this.setPlaceholderVisible(false);
+    } else {
+      //DOM 조작을 통한 classList add
+      this.setPlaceholderVisible(true);
+    }
   }
 
   setPlaceholderVisible(visible: boolean): void {
