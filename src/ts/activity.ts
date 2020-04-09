@@ -5,7 +5,7 @@ class Activity implements View{
   }
 
   render(): string {
-
+    return ``;
   }
 
   registerEventListener(): void {
