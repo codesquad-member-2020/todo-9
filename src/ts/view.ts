@@ -1,5 +1,5 @@
 interface View {
-  render(): void;
+  render(): string;
   registerEventListener(): void;
 }
 
