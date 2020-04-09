@@ -69,7 +69,21 @@ class Column implements View {
     qs$(".column-wrap").innerHTML = columnTemplate;
   }
 
-  getColumnHeader(cardName: string, cards: Array<Object>): string {}
+  getColumnHeader(cardName: string, cards: Array<Object>): string {
+    const cardCount: number = cards ? cards.length : 0;
+    return `
+    <div class="column-header">
+      <div class="column-title-wrap">
+        <span class="card-count">${cardCount}</span>
+        <span class="column-title">${cardName}</span>
+      </div>
+      <div class="column-icon-wrap">
+        <span class="add">&plus;</span>
+        <span class="close">&times;</span>
+      </div>
+    </div>
+    `;
+  }
 
   getCardInput(): string {}
 
