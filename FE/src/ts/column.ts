@@ -85,7 +85,17 @@ class Column implements View {
     `;
   }
 
-  getCardInput(): string {}
+  getCardInput(): string {
+    return `
+    <div class="input-wrap hidden">
+      <textarea id="card-input" placeholder="Enter a note"></textarea>
+      <div class="btn-wrap">
+        <button disabled="disabled" class="btn add-btn">Add</button>
+        <button class="btn cancel-btn">Cancel</button>
+      </div>
+    </div>
+    `;
+  }
 
   getCardContents(id: string, cards: Array<Object>): string {}
 
