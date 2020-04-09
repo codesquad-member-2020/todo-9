@@ -50,7 +50,30 @@ class Column implements View {
 
   cardDoubleClickEventHandler() {}
 
-  receiveInitialData({ columns }: any): void {}
+  receiveInitialData({ columns }: any): void {
+    let columnTemplate: string = "";
+    columns.forEach((element: Element) => {
+      const { id, name, createdAt, updatedAt, archivedAt, order, cards, archived }: any = element;
+      columnTemplate += `
+      <div class="project-columns">
+        <div class="column" id="c${id}">
+          ${this.getColumnHeader(name, cards)}
+          <div class="card-wrap">
+          ${this.getCardInput()}
+          ${this.getCardContents(id, cards)}
+          </div>
+        </div>
+      </div>
+      `;
+    });
+    qs$(".column-wrap").innerHTML = columnTemplate;
+  }
+
+  getColumnHeader(cardName: string, cards: Array<Object>): string {}
+
+  getCardInput(): string {}
+
+  getCardContents(id: string, cards: Array<Object>): string {}
 
   //Column 영역의 '+' 버튼을 클릭 했을 때 호출되는 핸들러
   plusBtnClickEventHandler(): void {
