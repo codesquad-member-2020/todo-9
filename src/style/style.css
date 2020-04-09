@@ -75,6 +75,10 @@
   margin: 10px 0;
 }
 
+.hidden {
+  display: none;
+}
+
 #card-input {
   width: -webkit-fill-available;
   height: 54px;
