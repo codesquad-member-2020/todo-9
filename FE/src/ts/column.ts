@@ -97,7 +97,30 @@ class Column implements View {
     `;
   }
 
-  getCardContents(id: string, cards: Array<Object>): string {}
+  getCardContents(id: string, cards: Array<Object>): string {
+    if (!cards) return "";
+
+    let cardTemplate: string = "";
+
+    cards.forEach((element: any) => {
+      cardTemplate += `
+      <div class="card-content-wrap">
+        <div class="card" id="c${id}-${element.id}">
+          <div class="card-icon">
+            <span class="material-icons">description</span>
+          </div>
+          <span class="close">&times;</span>
+          <div class="content-wrap">
+            <div class="card-content">${element.contents}</div>
+            <div class="card-author">Added by <span>choisohyun</span></div>
+          </div>
+        </div>
+      </div>
+      `;
+    });
+
+    return cardTemplate;
+  }
 
   //Column 영역의 '+' 버튼을 클릭 했을 때 호출되는 핸들러
   plusBtnClickEventHandler(): void {
