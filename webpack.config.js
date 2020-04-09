@@ -1,6 +1,5 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
     entry: './src/ts/index.ts',
@@ -39,11 +38,6 @@ module.exports = {
                     }
                 }
             },
-            // {
-            //     test: /\.(css)$/,
-            //     exclude: /node_modules/,
-            //     use: [ MiniCssExtractPlugin.loader, 'css-loader' ],
-            // },
             {
                 test: /\.css$/,
                 use: [
@@ -51,18 +45,6 @@ module.exports = {
                     'css-loader'
                 ]
             },
-            // {
-            //     test: /\.css$/,
-            //     use: [
-            //       'css-modules-typescript-loader',
-            //       {
-            //         loader: 'css-loader',
-            //         options: {
-            //           modules: true
-            //         }
-            //       }
-            //     ]
-            // }
         ]
     },
     resolve: {
@@ -72,9 +54,5 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './src/view/index.html'
         }),
-        // new MiniCssExtractPlugin({
-        //     filename: '[name].css',
-        //     chunkFilename: '[name].[id].css'
-        //   })
     ],
 };
