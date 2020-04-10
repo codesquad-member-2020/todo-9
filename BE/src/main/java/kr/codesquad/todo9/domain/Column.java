@@ -1,29 +1,25 @@
 package kr.codesquad.todo9.domain;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import org.springframework.data.annotation.Id;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Column {
+
+    @Id
     private Long id;
     private String name;
-    private ZonedDateTime createdAt;
-    private ZonedDateTime updatedAt;
-    private ZonedDateTime archivedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private LocalDateTime archivedAt;
     private Boolean isArchived;
-    private Integer order;
+    private Integer columnOrder;
     private List<Card> cards;
 
-    public Column(long id, String name) {
+    public Column(Long id, String name) {
         this.id = id;
         this.name = name;
-        this.createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-        this.updatedAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-        this.isArchived = false;
-    }
-
-    public void setCards(List<Card> cards) {
-        this.cards = cards;
     }
 
     public Long getId() {
@@ -34,31 +30,55 @@ public class Column {
         return name;
     }
 
-    public ZonedDateTime getCreatedAt() {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public ZonedDateTime getUpdatedAt() {
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public ZonedDateTime getArchivedAt() {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public LocalDateTime getArchivedAt() {
         return archivedAt;
+    }
+
+    public void setArchivedAt(LocalDateTime archivedAt) {
+        this.archivedAt = archivedAt;
     }
 
     public Boolean getArchived() {
         return isArchived;
     }
 
-    public Integer getOrder() {
-        return order;
+    public void setArchived(Boolean archived) {
+        isArchived = archived;
+    }
+
+    public Integer getColumnOrder() {
+        return columnOrder;
+    }
+
+    public void setColumnOrder(Integer columnOrder) {
+        this.columnOrder = columnOrder;
     }
 
     public List<Card> getCards() {
         return cards;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
+    public void setCards(List<Card> cards) {
+        this.cards = cards;
     }
 }

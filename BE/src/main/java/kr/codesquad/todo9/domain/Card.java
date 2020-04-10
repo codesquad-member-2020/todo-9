@@ -15,7 +15,7 @@ public class Card {
     private LocalDateTime archivedAt;
     private Integer cardOrder;
     private Boolean isArchived;
-    private Long columnId;
+    private Long columnKey;
 
     @Column("CRT_USER_ID")
     private Long createdUserId;
@@ -103,16 +103,16 @@ public class Card {
         this.cardOrder = cardOrder;
     }
 
-    public Long getColumnId() {
-        return columnId;
+    public Long getColumnKey() {
+        return columnKey;
     }
 
-    public void setColumnId(Long columnId) {
-        this.columnId = columnId;
+    public void setColumnKey(Long columnKey) {
+        this.columnKey = columnKey;
     }
 
     @Override
     public String toString() {
-        return "Card{" + "id=" + id + ", contents='" + contents + '\'' + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", archivedAt=" + archivedAt + ", cardOrder=" + cardOrder + ", isArchived=" + isArchived + ", createdUserId=" + createdUserId + ", updatedUserId=" + updatedUserId + '}';
+        return "Card{" + "id=" + id + ", contents='" + contents + '\'' + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", archivedAt=" + archivedAt + ", cardOrder=" + cardOrder + ", isArchived=" + isArchived + ", columnKey=" + columnKey + ", createdUserId=" + createdUserId + ", updatedUserId=" + updatedUserId + '}';
     }
 }

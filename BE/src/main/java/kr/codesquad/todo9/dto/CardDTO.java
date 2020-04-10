@@ -12,7 +12,7 @@ public class CardDTO {
     private LocalDateTime archivedAt;
     private Integer cardOrder;
     private Boolean isArchived;
-    private Long columnId;
+    private Long columnKey;
     private User createdUser;
     private User updatedUser;
 
@@ -72,12 +72,12 @@ public class CardDTO {
         isArchived = archived;
     }
 
-    public Long getColumnId() {
-        return columnId;
+    public Long getColumnKey() {
+        return columnKey;
     }
 
-    public void setColumnId(Long columnId) {
-        this.columnId = columnId;
+    public void setColumnKey(Long columnKey) {
+        this.columnKey = columnKey;
     }
 
     public User getCreatedUser() {

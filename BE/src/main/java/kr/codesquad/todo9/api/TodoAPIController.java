@@ -56,7 +56,7 @@ public class TodoAPIController {
         card.setCreatedUserId(user.getId());
         card.setUpdatedUserId(user.getId());
         card.setCardOrder(cardRepository.getNextOrderOfColumn(1L));
-        card.setColumnId(1L);
+        card.setColumnKey(1L);
         log.debug("new Card: {}", card);
 
         card = cardRepository.save(card);

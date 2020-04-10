@@ -39,10 +39,10 @@ public class TodoMockAPIController {
         Column todo = new Column(1L, "todo");
         Column doing = new Column(2L, "doing");
         Column done = new Column(3L, "done");
-        todo.setOrder(1);
+        todo.setColumnOrder(1);
         todo.setCards(cards);
-        doing.setOrder(2);
-        done.setOrder(3);
+        doing.setColumnOrder(2);
+        done.setColumnOrder(3);
 
         List<Column> columns = new ArrayList<>();
         columns.add(todo);
