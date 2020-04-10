@@ -117,6 +117,10 @@
   background: rgb(0, 120, 0);
 }
 
+.edit-note-modal > .modal-container > .modal-body > button:disabled {
+  background: rgb(0, 160, 0, 0.3);
+}
+
 @media (max-height: 450px) {
   .edit-note-modal > .modal-container {
     height: 80%;
