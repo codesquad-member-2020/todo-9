@@ -51,23 +51,23 @@ create table if not exists `COLUMN`
 
 create table if not exists CARD
 (
-	ID bigint auto_increment,
-	CONTENTS varchar(500) null,
-	CREATED_AT datetime not null default now(),
-	UPDATED_AT datetime not null default now(),
-	ARCHIVED_AT datetime null,
-	IS_ARCHIVED boolean not null default false,
-	`ORDER` int null,
-	COLUMN_ID bigint null,
-	CRT_USER_ID bigint null,
-	UPD_USER_ID bigint null,
-	constraint CARD_pk
-		primary key (ID),
-	constraint CARD_COLUMN_ID_fk
-		foreign key (COLUMN_ID) references `COLUMN` (ID),
-	constraint CARD_USER_ID_fk
-		foreign key (CRT_USER_ID) references USER (ID),
-	constraint CARD_USER_ID_fk_2
+    ID          bigint auto_increment,
+    CONTENTS    varchar(500) null,
+    CREATED_AT  datetime     not null default now(),
+    UPDATED_AT  datetime     not null default now(),
+    ARCHIVED_AT datetime     null,
+    IS_ARCHIVED boolean      not null default false,
+    CARD_ORDER  int          null,
+    COLUMN_ID   bigint       null,
+    CRT_USER_ID bigint       null,
+    UPD_USER_ID bigint       null,
+    constraint CARD_pk
+        primary key (ID),
+    constraint CARD_COLUMN_ID_fk
+        foreign key (COLUMN_ID) references `COLUMN` (ID),
+    constraint CARD_USER_ID_fk
+        foreign key (CRT_USER_ID) references USER (ID),
+    constraint CARD_USER_ID_fk_2
 		foreign key (UPD_USER_ID) references USER (ID)
 );
 
