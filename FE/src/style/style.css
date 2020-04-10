@@ -144,6 +144,11 @@
   border-radius: 6px;
   border: 1px solid #e1e4e8;
   margin: 3px 0;
+  user-select: none; /* supported by Chrome and Opera */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
 }
 
 .content-wrap {
