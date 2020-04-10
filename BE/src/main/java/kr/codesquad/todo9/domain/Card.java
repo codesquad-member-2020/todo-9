@@ -1,48 +1,42 @@
 package kr.codesquad.todo9.domain;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+
+import java.time.LocalDateTime;
 
 public class Card {
+
+    @Id
     private Long id;
     private String contents;
-    private ZonedDateTime createdAt;
-    private ZonedDateTime updatedAt;
-    private ZonedDateTime archivedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private LocalDateTime archivedAt;
+    private Integer cardOrder;
     private Boolean isArchived;
-    private Long beforeCardId;
-    private Long afterCardId;
+    private Long columnId;
+
+    @Column("CRT_USER_ID")
     private Long createdUserId;
+
+    @Column("UPD_USER_ID")
     private Long updatedUserId;
 
-    public Card(long id, String contents, Long userId) {
+    public Card() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        this.isArchived = false;
+    }
+
+    public Card(Long id, String contents, User user) {
         this.id = id;
         this.contents = contents;
-        this.createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-        this.updatedAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
         this.isArchived = false;
-        this.createdUserId = userId;
-        this.updatedUserId = userId;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setBeforeCardId(Long beforeCardId) {
-        this.beforeCardId = beforeCardId;
-    }
-
-    public void setAfterCardId(Long afterCardId) {
-        this.afterCardId = afterCardId;
-    }
-
-    public void setCreatedUserId(Long createdUserId) {
-        this.createdUserId = createdUserId;
-    }
-
-    public void setUpdatedUserId(Long updatedUserId) {
-        this.updatedUserId = updatedUserId;
+        this.createdUserId = user.getId();
+        this.updatedUserId = user.getId();
     }
 
     public Long getId() {
@@ -53,35 +47,72 @@ public class Card {
         return contents;
     }
 
-    public ZonedDateTime getCreatedAt() {
+    public void setContents(String contents) {
+        this.contents = contents;
+    }
+
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public ZonedDateTime getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public ZonedDateTime getArchivedAt() {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public LocalDateTime getArchivedAt() {
         return archivedAt;
+    }
+
+    public void setArchivedAt(LocalDateTime archivedAt) {
+        this.archivedAt = archivedAt;
     }
 
     public Boolean getArchived() {
         return isArchived;
     }
 
-    public Long getBeforeCardId() {
-        return beforeCardId;
-    }
-
-    public Long getAfterCardId() {
-        return afterCardId;
+    public void setArchived(Boolean archived) {
+        isArchived = archived;
     }
 
     public Long getCreatedUserId() {
         return createdUserId;
     }
 
+    public void setCreatedUserId(Long createdUserId) {
+        this.createdUserId = createdUserId;
+    }
+
     public Long getUpdatedUserId() {
         return updatedUserId;
+    }
+
+    public void setUpdatedUserId(Long updatedUserId) {
+        this.updatedUserId = updatedUserId;
+    }
+
+    public Integer getCardOrder() {
+        return cardOrder;
+    }
+
+    public void setCardOrder(Integer cardOrder) {
+        this.cardOrder = cardOrder;
+    }
+
+    public Long getColumnId() {
+        return columnId;
+    }
+
+    public void setColumnId(Long columnId) {
+        this.columnId = columnId;
+    }
+
+    @Override
+    public String toString() {
+        return "Card{" + "id=" + id + ", contents='" + contents + '\'' + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", archivedAt=" + archivedAt + ", cardOrder=" + cardOrder + ", isArchived=" + isArchived + ", createdUserId=" + createdUserId + ", updatedUserId=" + updatedUserId + '}';
     }
 }

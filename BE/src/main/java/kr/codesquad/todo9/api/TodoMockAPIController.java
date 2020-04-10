@@ -28,10 +28,8 @@ public class TodoMockAPIController {
         User newUser = new User(1L, "newUser");
 
         // todo Cards
-        Card firstCard = new Card(1L, "안녕하세요~~", newUser.getId());
-        Card secondCard = new Card(2L, "asdf", newUser.getId());
-        firstCard.setAfterCardId(2L);
-        secondCard.setBeforeCardId(1L);
+        Card firstCard = new Card(1L, "안녕하세요~~", newUser);
+        Card secondCard = new Card(2L, "asdf", newUser);
 
         List<Card> cards = new ArrayList<>();
         cards.add(firstCard);
