@@ -48,7 +48,12 @@ class Column implements View {
     });
   }
 
-  cardDoubleClickEventHandler() {}
+  cardDoubleClickEventHandler(evt:Event) {
+    const content = (<HTMLInputElement>evt.currentTarget).querySelector('.card-content')?.innerHTML;
+    const columnId = ((<HTMLInputElement>evt.currentTarget).id);
+    const cardId: any = (<HTMLInputElement>evt.currentTarget).querySelector('.card')?.id;
+    this.editNote.showModal(columnId, cardId, content, evt);
+  }
 
   receiveInitialData({ columns }: any): void {
     let columnTemplate: string = "";
