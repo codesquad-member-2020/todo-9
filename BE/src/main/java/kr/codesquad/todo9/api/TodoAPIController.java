@@ -1,11 +1,18 @@
 package kr.codesquad.todo9.api;
 
 import kr.codesquad.todo9.domain.*;
+import kr.codesquad.todo9.responseobjects.Result;
+import kr.codesquad.todo9.utils.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,4 +77,19 @@ public class TodoAPIController {
     public Board showBoard() {
         return board;
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<Result> login(HttpServletResponse httpServletResponse) {
+        Result result = new Result(true, "success");
+        User newUser = new User(1L, "todo9");
+        String jws = JwtUtils.createJws(newUser);
+        log.debug("newUser: {}", newUser);
+        log.debug("jws: {}", jws);
+
+        Cookie jwsCookie = new Cookie("jws", jws);
+        httpServletResponse.addCookie(jwsCookie);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
 }
