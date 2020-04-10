@@ -150,6 +150,14 @@
   padding: 8px 32px;
 }
 
+.content-wrap > .card-content {
+  pointer-events: none;
+}
+
+.content-wrap > .card-author {
+  pointer-events: none;
+}
+
 .column-title-wrap,
 .column-icon-wrap {
   width: calc(330px / 2);
@@ -173,6 +181,7 @@
 }
 
 .material-icons {
+  pointer-events: none;
 }
 
 .column-title {
