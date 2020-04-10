@@ -187,6 +187,13 @@
   font-weight: bold;
 }
 
+.material-icons,
+.card-content,
+.card-author,
+.close {
+  pointer-events: none;
+}
+
 .add:hover,
 .add:focus,
 .close:hover,
