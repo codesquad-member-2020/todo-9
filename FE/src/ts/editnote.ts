@@ -64,7 +64,7 @@ class EditNote extends Modal {
 
   saveButtonHandler(evt: Event): void {
     const textElement = this.getTextElement();
-    this.currentEvent.innerHTML = textElement.value;
+    this.currentTargetElement.innerHTML = textElement.value;
 
     this.hideModal();
   }
