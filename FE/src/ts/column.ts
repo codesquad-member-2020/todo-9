@@ -39,20 +39,31 @@ class Column implements View {
       }
     });
 
-    qs$(".card").addEventListener("dblclick", (evt: Event) =>
-      this.cardDoubleClickEventHandler(evt)
-    );
+    document.body.addEventListener("dblclick", (evt : Event) => {
+      const className = (<HTMLInputElement>evt.target).className;
+      if (className === "content-wrap") {
+        this.cardDoubleClickEventHandler(<HTMLInputElement>(<HTMLInputElement>evt.target).closest(".card"));
+      }
+    });
+
+    // qs$(".content-wrap").addEventListener("dblclick", ( evt : Event) => {
+    //   const className = (<HTMLInputElement>evt.target).className;
+    //   if (className !== "close")
+    //     this.cardDoubleClickEventHandler(evt)
+    // });
 
     qs$(".column-wrap").addEventListener("input", ({ target }: Event) => {
       console.log((<HTMLInputElement>target).value);
     });
   }
 
-  cardDoubleClickEventHandler(evt:Event) {
-    const content = (<HTMLInputElement>evt.currentTarget).querySelector('.card-content')?.innerHTML;
-    const columnId = ((<HTMLInputElement>evt.currentTarget).id);
-    const cardId: any = (<HTMLInputElement>evt.currentTarget).querySelector('.card')?.id;
-    this.editNote.showModal(columnId, cardId, content, evt);
+  cardDoubleClickEventHandler(card:HTMLInputElement) {
+    const contentElement: any = card.querySelector('.card-content');
+    const content = contentElement.innerHTML;
+    const cardId = card.id;
+    const columnId: any = card.closest('.column')?.id;
+
+    this.editNote.showModal(columnId, cardId, content, contentElement);
   }
 
   receiveInitialData({ columns }: any): void {
