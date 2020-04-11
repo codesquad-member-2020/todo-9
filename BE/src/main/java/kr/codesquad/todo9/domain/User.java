@@ -16,6 +16,11 @@ public class User {
         this.username = username;
     }
 
+    public User(Map<String, Object> data) {
+        this.id = Long.parseLong(String.valueOf(data.get("id")));
+        this.username = (String) data.get("username");
+    }
+  
     public Long getId() {
         return id;
     }
