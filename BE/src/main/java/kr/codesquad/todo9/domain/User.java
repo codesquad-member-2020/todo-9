@@ -1,10 +1,15 @@
 package kr.codesquad.todo9.domain;
 
-import java.util.Map;
+import org.springframework.data.annotation.Id;
 
 public class User {
+
+    @Id
     private Long id;
     private String username;
+    private String profileImageUrl;
+
+    public User() {}
 
     public User(Long id, String username) {
         this.id = id;
@@ -24,8 +29,20 @@ public class User {
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
+
     @Override
     public String toString() {
-        return "User{" + "id=" + id + ", username='" + username + '\'' + '}';
+        return "User{" + "id=" + id + ", username='" + username + '\'' + ", profileImageUrl='" + profileImageUrl + '\'' + '}';
     }
 }
