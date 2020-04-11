@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,25 @@ public class Board {
     public void addCard(int columnIndex, String contents, User user) {
         List<Card> cards = columns.get(columnIndex).getCards();
         cards.add(createCard(contents, user));
+    }
+
+    public void addLog(String action, String type, User user, String contents, int boardKey) {
+        logs.add(createLog(action, type, user, contents, boardKey));
+    }
+
+    private Log createLog(String action, String type, User user, String contents, int boardKey) {
+        Log newLog = new Log();
+        newLog.setAction(action);
+        newLog.setType(type);
+        newLog.setUserId(user.getId());
+        newLog.setAfterCardContents(contents);
+        int boardId = boardKey - 1;
+        List<Card> cards = this.columns.get(boardId).getCards();
+        newLog.setAfterCardId(cards.get(cards.size() - 1).getId());
+        newLog.setFromColumnId((long) boardKey);
+        newLog.setToColumnId((long) boardKey);
+        newLog.setActionedAt(LocalDateTime.now());
+        return newLog;
     }
 
     private Card createCard(String contents, User user) {
@@ -64,4 +84,5 @@ public class Board {
     public String toString() {
         return "Board{" + "id=" + id + ", name='" + name + '\'' + ", columns=" + columns + ", logs=" + logs + '}';
     }
+
 }
