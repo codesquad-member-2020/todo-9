@@ -1,11 +1,7 @@
 package kr.codesquad.todo9.api;
 
-import kr.codesquad.todo9.domain.Card;
-import kr.codesquad.todo9.domain.Column;
-import kr.codesquad.todo9.domain.Log;
-import kr.codesquad.todo9.domain.User;
-import kr.codesquad.todo9.repository.ColumnRepository;
-import kr.codesquad.todo9.repository.LogRepository;
+import kr.codesquad.todo9.domain.*;
+import kr.codesquad.todo9.repository.BoardRepository;
 import kr.codesquad.todo9.repository.UserRepository;
 import kr.codesquad.todo9.responseobjects.Result;
 import org.slf4j.Logger;
@@ -20,17 +16,17 @@ import java.util.List;
 public class TodoAPIController {
 
     private static final Logger log = LoggerFactory.getLogger(TodoAPIController.class);
+    private static final Long defaultBoardId = 1L;
+    private static final Long defaultUserId = 1L;
 
     private final UserRepository userRepository;
-    private final ColumnRepository columnRepository;
-    private final LogRepository logRepository;
+    private final BoardRepository boardRepository;
+
 
     public TodoAPIController(UserRepository userRepository,
-                             ColumnRepository columnRepository,
-                             LogRepository logRepository) {
+                             BoardRepository boardRepository) {
         this.userRepository = userRepository;
-        this.columnRepository = columnRepository;
-        this.logRepository = logRepository;
+        this.boardRepository = boardRepository;
     }
 
     @GetMapping("/user/list")
@@ -50,9 +46,9 @@ public class TodoAPIController {
         return new Result(true, "success");
     }
 
-    @GetMapping("/column/{columnId}/card/list")
-    public List<Card> showCardListOfColumn(@PathVariable Long columnId) {
-        Column column = columnRepository.findById(columnId).orElseThrow(RuntimeException::new);
+    @GetMapping("/board/{boardId}/column/{boardKey}/card/list")
+    public List<Card> showCardListOfColumnOfBoard(@PathVariable Long boardId, @PathVariable int boardKey) {
+        Column column = boardRepository.findById(boardId).orElseThrow(RuntimeException::new).getColumns().get(boardKey);
         log.debug("column: {}", column);
 
         List<Card> cards = column.getCards();
@@ -61,34 +57,70 @@ public class TodoAPIController {
         return cards;
     }
 
-    @PostMapping("/column/{columnId}/card/{contents}")
-    public Result addCardIntoColumn(@PathVariable Long columnId, @PathVariable String contents) {
-        User user = userRepository.findById(1L).orElseThrow(RuntimeException::new);
+    @GetMapping("/column/{boardKey}/card/list")
+    public List<Card> showCardListOfColumn(@PathVariable int boardKey) {
+        return showCardListOfColumnOfBoard(defaultBoardId, boardKey);
+    }
+
+    @PostMapping("/board/{boardId}/column/{boardKey}/card/{contents}")
+    public Result addCard(@PathVariable Long boardId, @PathVariable int boardKey, @PathVariable String contents) {
+        User user = userRepository.findById(defaultUserId).orElseThrow(RuntimeException::new);
         log.debug("firstUser: {}", user);
 
-        Column column = columnRepository.findById(columnId).orElseThrow(RuntimeException::new);
-        log.debug("column: {}", column);
+        Board board = boardRepository.findById(boardId).orElseThrow(RuntimeException::new);
+        log.debug("board: {}", board);
 
-        column.addCard(contents, user);
-        column = columnRepository.save(column);
-        log.debug("save after column: {}", column);
+        board.addCard(boardKey, contents, user);
+        boardRepository.save(board);
+        log.debug("save after board: {}", board);
 
         return new Result(true, "success");
     }
 
-    @GetMapping("/column/list")
-    public Iterable<Column> showColumnList() {
-        Iterable<Column> columns = columnRepository.findAll();
+    @PostMapping("/column/{boardKey}/card/{contents}")
+    public Result addCard(@PathVariable int boardKey, @PathVariable String contents) {
+        return addCard(defaultBoardId, boardKey, contents);
+    }
+
+    @GetMapping("/board/{boardId}/column/list")
+    public List<Column> showColumnList(@PathVariable Long boardId) {
+        List<Column> columns = boardRepository.findById(boardId).orElseThrow(RuntimeException::new).getColumns();
         for (Column column : columns) {
             Collections.sort(column.getCards());
         }
-        log.debug("columns: {}", columns);
         return columns;
     }
 
+    @GetMapping("/column/list")
+    public List<Column> showColumnList() {
+        return showColumnList(defaultBoardId);
+    }
+
+    @GetMapping("/board/{boardId}/log/list")
+    public List<Log> showLogList(@PathVariable Long boardId) {
+        List<Log> logs = boardRepository.findById(boardId).orElseThrow(RuntimeException::new).getLogs();
+        Collections.reverse(logs);
+        return logs;
+    }
+
     @GetMapping("/log/list")
-    public Iterable<Log> showLogList() {
-        return logRepository.findAll();
+    public List<Log> showLogList() {
+        return showLogList(defaultBoardId);
+    }
+
+    @GetMapping("/board/{boardId}")
+    public Board showBoard(@PathVariable Long boardId) {
+        Board board = boardRepository.findById(boardId).orElseThrow(RuntimeException::new);
+        List<Column> columns = board.getColumns();
+        for (Column column : columns) {
+            Collections.sort(column.getCards());
+        }
+        return board;
+    }
+
+    @GetMapping("/board")
+    public Board showBoard() {
+        return showBoard(defaultBoardId);
     }
 
 }

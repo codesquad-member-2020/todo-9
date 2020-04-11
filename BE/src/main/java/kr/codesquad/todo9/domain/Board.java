@@ -1,24 +1,43 @@
 package kr.codesquad.todo9.domain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.annotation.Id;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
-    private Long id;
-    private String name;
-    private List<Column> columns;
-    private List<Log> logs;
+    
+    private static final Logger log = LoggerFactory.getLogger(Board.class);
 
-    public Board(long id, String name) {
+    private @Id Long id;
+    private String name;
+    private List<Column> columns = new ArrayList<>();
+    private List<Log> logs = new ArrayList<>();
+
+    public Board(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Long getId() {
-        return id;
+    public void addCard(int columnIndex, String contents, User user) {
+        List<Card> cards = columns.get(columnIndex).getCards();
+        cards.add(createCard(contents, user));
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    private Card createCard(String contents, User user) {
+        Card card = new Card();
+        card.setContents(contents);
+        card.setCreatedUserId(user.getId());
+        card.setUpdatedUserId(user.getId());
+        log.debug("new Card: {}", card);
+
+        return card;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
@@ -29,19 +48,20 @@ public class Board {
         this.name = name;
     }
 
-    public void setColumns(List<Column> columns) {
-        this.columns = columns;
-    }
-
-    public void setLogs(List<Log> logs) {
-        this.logs = logs;
-    }
-
     public List<Column> getColumns() {
         return columns;
     }
 
     public List<Log> getLogs() {
         return logs;
+    }
+
+    public void setColumns(List<Column> columns) {
+        this.columns = columns;
+    }
+
+    @Override
+    public String toString() {
+        return "Board{" + "id=" + id + ", name='" + name + '\'' + ", columns=" + columns + ", logs=" + logs + '}';
     }
 }
