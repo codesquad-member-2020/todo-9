@@ -6,21 +6,21 @@ drop table if exists USER;
 
 create table if not exists `USER`
 (
-	ID bigint auto_increment,
-	USERNAME varchar(24) null,
-	PROFILE_IMAGE_URL varchar(500) null,
-	constraint USER_pk
-		primary key (ID)
+    ID                bigint auto_increment,
+    USERNAME          varchar(24)  null,
+    PROFILE_IMAGE_URL varchar(500) null,
+    constraint USER_pk
+        primary key (ID)
 );
 
 create table if not exists BOARD
 (
-	ID bigint auto_increment,
-	NAME varchar(24) null,
-	CRT_USER_ID bigint null,
-	UPD_USER_ID bigint null,
-	constraint BOARD_pk
-		primary key (ID),
+    ID          bigint auto_increment,
+    NAME        varchar(24) null,
+    CRT_USER_ID bigint      null,
+    UPD_USER_ID bigint      null,
+    constraint BOARD_pk
+        primary key (ID),
     constraint BOARD_USER_ID_fk
         foreign key (CRT_USER_ID) references USER (ID),
     constraint BOARD_USER_ID_fk_2
@@ -35,14 +35,14 @@ create table if not exists `COLUMN`
     UPDATED_AT   datetime    not null default now(),
     ARCHIVED_AT  datetime    null,
     IS_ARCHIVED  boolean     not null default false,
-    COLUMN_ORDER int         null,
-    BOARD_ID     bigint      null,
+    BOARD_KEY    int         null,
+    BOARD        bigint      null,
     CRT_USER_ID  bigint      null,
     UPD_USER_ID  bigint      null,
     constraint COLUMN_pk
         primary key (ID),
-    constraint COLUMN_BOARD_ID_fk
-        foreign key (BOARD_ID) references BOARD (ID),
+    constraint COLUMN_BOARD_fk
+        foreign key (BOARD) references BOARD (ID),
     constraint COLUMN_USER_ID_fk
         foreign key (CRT_USER_ID) references USER (ID),
     constraint COLUMN_USER_ID_fk_2
@@ -57,14 +57,13 @@ create table if not exists CARD
     UPDATED_AT  datetime     not null default now(),
     ARCHIVED_AT datetime     null,
     IS_ARCHIVED boolean      not null default false,
-    CARD_ORDER  int          null,
     `COLUMN`    bigint       null,
-    COLUMN_KEY  bigint       null,
+    COLUMN_KEY  int          null,
     CRT_USER_ID bigint       null,
     UPD_USER_ID bigint       null,
     constraint CARD_pk
         primary key (ID),
-    constraint CARD_COLUMN_ID_fk
+    constraint CARD_COLUMN_fk
         foreign key (`COLUMN`) references `COLUMN` (ID),
     constraint CARD_USER_ID_fk
         foreign key (CRT_USER_ID) references USER (ID),
@@ -88,5 +87,7 @@ create table if not exists LOG
     ACTIONED_AT          datetime     not null default now(),
     USER_ID              bigint       null,
     constraint LOG_pk
-        primary key (ID)
+        primary key (ID),
+    constraint LOG_BOARD_fk
+        foreign key (BOARD) references BOARD(ID)
 );

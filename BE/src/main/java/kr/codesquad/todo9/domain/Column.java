@@ -18,7 +18,7 @@ public class Column {
     private LocalDateTime updatedAt;
     private LocalDateTime archivedAt;
     private Boolean isArchived;
-    private Integer columnOrder;
+    private Integer boardKey;
     private List<Card> cards = new ArrayList<>();
 
     @org.springframework.data.relational.core.mapping.Column("CRT_USER_ID")
@@ -90,12 +90,12 @@ public class Column {
         isArchived = archived;
     }
 
-    public Integer getColumnOrder() {
-        return columnOrder;
+    public Integer getBoardKey() {
+        return boardKey;
     }
 
-    public void setColumnOrder(Integer columnOrder) {
-        this.columnOrder = columnOrder;
+    public void setBoardKey(Integer boardKey) {
+        this.boardKey = boardKey;
     }
 
     public List<Card> getCards() {
@@ -124,6 +124,6 @@ public class Column {
 
     @Override
     public String toString() {
-        return "Column{" + "id=" + id + ", name='" + name + '\'' + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", archivedAt=" + archivedAt + ", isArchived=" + isArchived + ", columnOrder=" + columnOrder + ", cards=" + cards + ", createdUserId=" + createdUserId + ", updatedUserId=" + updatedUserId + '}';
+        return "Column{" + "id=" + id + ", name='" + name + '\'' + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", archivedAt=" + archivedAt + ", isArchived=" + isArchived + ", boardKey=" + boardKey + ", cards=" + cards + ", createdUserId=" + createdUserId + ", updatedUserId=" + updatedUserId + '}';
     }
 }
