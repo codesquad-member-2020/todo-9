@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -83,6 +84,7 @@ public class TodoAPIController {
     }
 
     @PostMapping("/board/{boardId}/column/{boardKey}/card/{contents}")
+    @Transactional
     public Result addCard(@PathVariable Long boardId, @PathVariable int boardKey, @PathVariable String contents) {
         User user = userRepository.findById(defaultUserId).orElseThrow(RuntimeException::new);
         log.debug("firstUser: {}", user);
@@ -93,6 +95,10 @@ public class TodoAPIController {
         board.addCard(boardKey, contents, user);
         boardRepository.save(board);
         log.debug("save after board: {}", board);
+
+        board.addLog("create", "card", user, contents, boardKey);
+        boardRepository.save(board);
+        log.debug("save log after board: {}", board);
 
         return new Result(true, "success");
     }
