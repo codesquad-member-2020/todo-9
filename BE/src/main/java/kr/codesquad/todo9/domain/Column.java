@@ -19,7 +19,6 @@ public class Column {
     private LocalDateTime archivedAt;
     private Boolean isArchived;
     private Integer columnOrder;
-
     private List<Card> cards = new ArrayList<>();
 
     @org.springframework.data.relational.core.mapping.Column("CRT_USER_ID")

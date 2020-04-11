@@ -74,17 +74,19 @@ create table if not exists CARD
 
 create table if not exists LOG
 (
-	ID bigint auto_increment,
-	ACTION varchar(24) null,
-	TYPE varchar(24) null,
-	BEFORE_CARD_CONTENTS varchar(500) null,
-	AFTER_CARD_CONTENTS varchar(500) null,
-	BEFORE_CARD_ID bigint null,
-	AFTER_CARD_ID bigint null,
-	FROM_COLUMN_ID bigint null,
-	TO_COLUMN_ID bigint null,
-	ACTIONED_AT datetime not null default now(),
-	USER_ID bigint null,
-	constraint LOG_pk
-		primary key (ID)
+    ID                   bigint auto_increment,
+    ACTION               varchar(24)  null,
+    TYPE                 varchar(24)  null,
+    BEFORE_CARD_CONTENTS varchar(500) null,
+    AFTER_CARD_CONTENTS  varchar(500) null,
+    BEFORE_CARD_ID       bigint       null,
+    AFTER_CARD_ID        bigint       null,
+    FROM_COLUMN_ID       bigint       null,
+    TO_COLUMN_ID         bigint       null,
+    BOARD                bigint       null,
+    BOARD_KEY            int          null,
+    ACTIONED_AT          datetime     not null default now(),
+    USER_ID              bigint       null,
+    constraint LOG_pk
+        primary key (ID)
 );
