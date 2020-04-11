@@ -8,8 +8,7 @@ import java.util.Objects;
 
 public class Card implements Comparable<Card> {
 
-    @Id
-    private Long id;
+    private @Id Long id;
     private String contents;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
