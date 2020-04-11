@@ -12,8 +12,7 @@ public class Column {
 
     private static final Logger log = LoggerFactory.getLogger(Column.class);
 
-    @Id
-    private Long id;
+    private @Id Long id;
     private String name;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
