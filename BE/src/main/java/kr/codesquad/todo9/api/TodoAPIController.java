@@ -1,14 +1,17 @@
 package kr.codesquad.todo9.api;
 
 import kr.codesquad.todo9.domain.Card;
+import kr.codesquad.todo9.domain.Column;
 import kr.codesquad.todo9.domain.User;
-import kr.codesquad.todo9.dto.CardDTO;
-import kr.codesquad.todo9.repository.CardRepository;
+import kr.codesquad.todo9.repository.ColumnRepository;
 import kr.codesquad.todo9.repository.UserRepository;
 import kr.codesquad.todo9.responseobjects.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping("/mock")
@@ -17,11 +20,11 @@ public class TodoAPIController {
     private static final Logger log = LoggerFactory.getLogger(TodoAPIController.class);
 
     private final UserRepository userRepository;
-    private final CardRepository cardRepository;
+    private final ColumnRepository columnRepository;
 
-    public TodoAPIController(UserRepository userRepository, CardRepository cardRepository) {
+    public TodoAPIController(UserRepository userRepository, ColumnRepository columnRepository) {
         this.userRepository = userRepository;
-        this.cardRepository = cardRepository;
+        this.columnRepository = columnRepository;
     }
 
     @GetMapping("/user/list")
@@ -41,28 +44,40 @@ public class TodoAPIController {
         return new Result(true, "success");
     }
 
-    @GetMapping("/card/list")
-    public Iterable<CardDTO> showCardList() {
-        return cardRepository.findAllCards();
+    @GetMapping("/column/{columnId}/card/list")
+    public List<Card> showCardListOfColumn(@PathVariable Long columnId) {
+        Column column = columnRepository.findById(columnId).orElseThrow(RuntimeException::new);
+        log.debug("column: {}", column);
+
+        List<Card> cards = column.getCards();
+        Collections.sort(cards);
+        log.debug("cards: {}", cards);
+        return cards;
     }
 
-    @PostMapping("/card/{contents}")
-    public Result addCard(@PathVariable String contents) {
+    @PostMapping("/column/{columnId}/card/{contents}")
+    public Result addCardIntoColumn(@PathVariable Long columnId, @PathVariable String contents) {
         User user = userRepository.findById(1L).orElseThrow(RuntimeException::new);
         log.debug("firstUser: {}", user);
 
-        Card card = new Card();
-        card.setContents(contents);
-        card.setCreatedUserId(user.getId());
-        card.setUpdatedUserId(user.getId());
-        card.setCardOrder(cardRepository.getNextOrderOfColumn(1L));
-        card.setColumnKey(1L);
-        log.debug("new Card: {}", card);
+        Column column = columnRepository.findById(columnId).orElseThrow(RuntimeException::new);
+        log.debug("column: {}", column);
 
-        card = cardRepository.save(card);
-        log.debug("new Card: {}", card);
+        column.addCard(contents, user);
+        column = columnRepository.save(column);
+        log.debug("save after column: {}", column);
 
         return new Result(true, "success");
+    }
+
+    @GetMapping("/column/list")
+    public Iterable<Column> showColumnList() {
+        Iterable<Column> columns = columnRepository.findAll();
+        for (Column column : columns) {
+            Collections.sort(column.getCards());
+        }
+        log.debug("columns: {}", columns);
+        return columns;
     }
 
 }
