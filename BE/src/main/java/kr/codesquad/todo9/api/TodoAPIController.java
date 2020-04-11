@@ -2,8 +2,10 @@ package kr.codesquad.todo9.api;
 
 import kr.codesquad.todo9.domain.Card;
 import kr.codesquad.todo9.domain.Column;
+import kr.codesquad.todo9.domain.Log;
 import kr.codesquad.todo9.domain.User;
 import kr.codesquad.todo9.repository.ColumnRepository;
+import kr.codesquad.todo9.repository.LogRepository;
 import kr.codesquad.todo9.repository.UserRepository;
 import kr.codesquad.todo9.responseobjects.Result;
 import org.slf4j.Logger;
@@ -21,10 +23,14 @@ public class TodoAPIController {
 
     private final UserRepository userRepository;
     private final ColumnRepository columnRepository;
+    private final LogRepository logRepository;
 
-    public TodoAPIController(UserRepository userRepository, ColumnRepository columnRepository) {
+    public TodoAPIController(UserRepository userRepository,
+                             ColumnRepository columnRepository,
+                             LogRepository logRepository) {
         this.userRepository = userRepository;
         this.columnRepository = columnRepository;
+        this.logRepository = logRepository;
     }
 
     @GetMapping("/user/list")
@@ -78,6 +84,11 @@ public class TodoAPIController {
         }
         log.debug("columns: {}", columns);
         return columns;
+    }
+
+    @GetMapping("/log/list")
+    public Iterable<Log> showLogList() {
+        return logRepository.findAll();
     }
 
 }

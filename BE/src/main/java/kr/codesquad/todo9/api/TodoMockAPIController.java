@@ -1,6 +1,9 @@
 package kr.codesquad.todo9.api;
 
-import kr.codesquad.todo9.domain.*;
+import kr.codesquad.todo9.domain.Board;
+import kr.codesquad.todo9.domain.Card;
+import kr.codesquad.todo9.domain.Column;
+import kr.codesquad.todo9.domain.User;
 import kr.codesquad.todo9.responseobjects.Result;
 import kr.codesquad.todo9.utils.JwtUtils;
 import org.slf4j.Logger;
@@ -27,7 +30,6 @@ public class TodoMockAPIController {
         // User
         User newUser = new User(1L, "newUser");
 
-        // todo Cards
         Card firstCard = new Card(1L, "안녕하세요~~", newUser);
         Card secondCard = new Card(2L, "asdf", newUser);
 
@@ -49,24 +51,9 @@ public class TodoMockAPIController {
         columns.add(doing);
         columns.add(done);
 
-        // logs
-        Log firstLog = new Log(1L, "create", null, null, null, 1L, 1L, 1L);
-        Log secondLog = new Log(2L, "create", null, null, null, 2L, 1L, 1L);
-        Log thirdLog = new Log(3L, "create", null, null, null, 3L, 1L, 1L);
-        Log fourthLog = new Log(4L, "create", null, 1L, 1L, 1L, 1L, 1L);
-        Log fifthLog = new Log(5L, "create", null, 2L, 1L, 1L, 1L, 1L);
-
-        List<Log> logs = new ArrayList<>();
-        logs.add(firstLog);
-        logs.add(secondLog);
-        logs.add(thirdLog);
-        logs.add(fourthLog);
-        logs.add(fifthLog);
-
         // board
         Board board = new Board(1L, "To Do 프로젝트");
         board.setColumns(columns);
-        board.setLogs(logs);
 
         this.board = board;
     }

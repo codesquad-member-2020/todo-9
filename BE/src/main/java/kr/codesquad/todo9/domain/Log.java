@@ -1,36 +1,22 @@
 package kr.codesquad.todo9.domain;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import org.springframework.data.annotation.Id;
+
+import java.time.LocalDateTime;
 
 public class Log {
-    private Long id;
-    private String action;
-    private Long beforeCard;
-    private Long afterCard;
-    private Long fromColumn;
-    private Long toColumn;
-    private ZonedDateTime actionedAt;
-    private Long boardId;
-    private Long userId;
 
-    public Log(Long id, String action,
-               Long beforeCard,
-               Long afterCard,
-               Long fromColumn,
-               Long toColumn,
-               Long boardId,
-               Long userId) {
-        this.id = id;
-        this.action = action;
-        this.beforeCard = beforeCard;
-        this.afterCard = afterCard;
-        this.fromColumn = fromColumn;
-        this.toColumn = toColumn;
-        this.actionedAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-        this.boardId = boardId;
-        this.userId = userId;
-    }
+    private @Id Long id;
+    private String action;
+    private String type;
+    private String beforeCardContents;
+    private String afterCardContents;
+    private Long beforeCardId;
+    private Long afterCardId;
+    private Long fromColumnId;
+    private Long toColumnId;
+    private LocalDateTime actionedAt;
+    private Long userId;
 
     public Long getId() {
         return id;
@@ -40,27 +26,79 @@ public class Log {
         return action;
     }
 
-    public Long getBeforeCard() {
-        return beforeCard;
+    public void setAction(String action) {
+        this.action = action;
     }
 
-    public Long getAfterCard() {
-        return afterCard;
+    public String getType() {
+        return type;
     }
 
-    public Long getFromColumn() {
-        return fromColumn;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public Long getToColumn() {
-        return toColumn;
+    public String getBeforeCardContents() {
+        return beforeCardContents;
     }
 
-    public ZonedDateTime getActionedAt() {
+    public void setBeforeCardContents(String beforeCardContents) {
+        this.beforeCardContents = beforeCardContents;
+    }
+
+    public String getAfterCardContents() {
+        return afterCardContents;
+    }
+
+    public void setAfterCardContents(String afterCardContents) {
+        this.afterCardContents = afterCardContents;
+    }
+
+    public Long getBeforeCardId() {
+        return beforeCardId;
+    }
+
+    public void setBeforeCardId(Long beforeCardId) {
+        this.beforeCardId = beforeCardId;
+    }
+
+    public Long getAfterCardId() {
+        return afterCardId;
+    }
+
+    public void setAfterCardId(Long afterCardId) {
+        this.afterCardId = afterCardId;
+    }
+
+    public Long getFromColumnId() {
+        return fromColumnId;
+    }
+
+    public void setFromColumnId(Long fromColumnId) {
+        this.fromColumnId = fromColumnId;
+    }
+
+    public Long getToColumnId() {
+        return toColumnId;
+    }
+
+    public void setToColumnId(Long toColumnId) {
+        this.toColumnId = toColumnId;
+    }
+
+    public LocalDateTime getActionedAt() {
         return actionedAt;
     }
 
-    public Long getBoardId() {
-        return boardId;
+    public void setActionedAt(LocalDateTime actionedAt) {
+        this.actionedAt = actionedAt;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }
