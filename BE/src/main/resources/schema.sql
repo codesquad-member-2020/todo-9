@@ -58,13 +58,14 @@ create table if not exists CARD
     ARCHIVED_AT datetime     null,
     IS_ARCHIVED boolean      not null default false,
     CARD_ORDER  int          null,
+    `COLUMN`    bigint       null,
     COLUMN_KEY  bigint       null,
     CRT_USER_ID bigint       null,
     UPD_USER_ID bigint       null,
     constraint CARD_pk
         primary key (ID),
     constraint CARD_COLUMN_ID_fk
-        foreign key (COLUMN_KEY) references `COLUMN` (ID),
+        foreign key (`COLUMN`) references `COLUMN` (ID),
     constraint CARD_USER_ID_fk
         foreign key (CRT_USER_ID) references USER (ID),
     constraint CARD_USER_ID_fk_2

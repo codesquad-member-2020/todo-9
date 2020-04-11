@@ -4,8 +4,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-public class Card {
+public class Card implements Comparable<Card> {
 
     @Id
     private Long id;
@@ -13,9 +14,9 @@ public class Card {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime archivedAt;
-    private Integer cardOrder;
+    private Integer columnKey;
     private Boolean isArchived;
-    private Long columnKey;
+    private Long column;
 
     @Column("CRT_USER_ID")
     private Long createdUserId;
@@ -55,6 +56,10 @@ public class Card {
         return createdAt;
     }
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
@@ -71,12 +76,28 @@ public class Card {
         this.archivedAt = archivedAt;
     }
 
+    public Integer getColumnKey() {
+        return columnKey;
+    }
+
+    public void setColumnKey(Integer columnKey) {
+        this.columnKey = columnKey;
+    }
+
     public Boolean getArchived() {
         return isArchived;
     }
 
     public void setArchived(Boolean archived) {
         isArchived = archived;
+    }
+
+    public Long getColumn() {
+        return column;
+    }
+
+    public void setColumn(Long column) {
+        this.column = column;
     }
 
     public Long getCreatedUserId() {
@@ -95,24 +116,37 @@ public class Card {
         this.updatedUserId = updatedUserId;
     }
 
-    public Integer getCardOrder() {
-        return cardOrder;
-    }
-
-    public void setCardOrder(Integer cardOrder) {
-        this.cardOrder = cardOrder;
-    }
-
-    public Long getColumnKey() {
-        return columnKey;
-    }
-
-    public void setColumnKey(Long columnKey) {
-        this.columnKey = columnKey;
+    @Override
+    public String toString() {
+        return "Card{" + "id=" + id + ", contents='" + contents + '\'' + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", archivedAt=" + archivedAt + ", columnKey=" + columnKey + ", isArchived=" + isArchived + ", columnId=" + column + ", createdUserId=" + createdUserId + ", updatedUserId=" + updatedUserId + '}';
     }
 
     @Override
-    public String toString() {
-        return "Card{" + "id=" + id + ", contents='" + contents + '\'' + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", archivedAt=" + archivedAt + ", cardOrder=" + cardOrder + ", isArchived=" + isArchived + ", columnKey=" + columnKey + ", createdUserId=" + createdUserId + ", updatedUserId=" + updatedUserId + '}';
+    public int compareTo(Card o) {
+        if (o == null || o.columnKey == null) {
+            return 0;
+        }
+        return o.columnKey - this.columnKey;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) { return true; }
+        if (!(o instanceof Card)) { return false; }
+        Card card = (Card) o;
+        return getCreatedAt().equals(card.getCreatedAt()) && getUpdatedAt().equals(card.getUpdatedAt()) && Objects.equals(
+                getArchivedAt(),
+                card.getArchivedAt()) && isArchived.equals(card.isArchived) && getCreatedUserId().equals(card.getCreatedUserId()) && getUpdatedUserId()
+                .equals(card.getUpdatedUserId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCreatedAt(),
+                getUpdatedAt(),
+                getArchivedAt(),
+                isArchived,
+                getCreatedUserId(),
+                getUpdatedUserId());
     }
 }
