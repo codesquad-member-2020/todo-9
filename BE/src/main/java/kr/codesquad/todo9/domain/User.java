@@ -2,6 +2,8 @@ package kr.codesquad.todo9.domain;
 
 import org.springframework.data.annotation.Id;
 
+import java.util.Map;
+
 public class User {
 
     @Id
