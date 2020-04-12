@@ -5,6 +5,7 @@ import Activity from "./activity";
 import EditNote from "./editnote";
 import EditColumn from "./editcolumn";
 import { qs$, addClass, removeClass } from "./lib/util";
+import { DELETE_MESSAGE } from './common/confirmMessage';
 
 class Column implements View {
   private activity: Activity;
@@ -39,10 +40,22 @@ class Column implements View {
       }
     });
 
+    document.body.addEventListener("click", (evt : Event) => {
+      const className = (<HTMLInputElement>evt.target).className;
+
+      if (className === 'close card-close') {
+        this.cardDeleteClickEventHandler(evt);
+      }
+    });
+
+
     document.body.addEventListener("dblclick", (evt : Event) => {
       const className = (<HTMLInputElement>evt.target).className;
+      
       if (className === "content-wrap") {
-        this.cardDoubleClickEventHandler(<HTMLInputElement>(<HTMLInputElement>evt.target).closest(".card"));
+        const contentWrap = (<HTMLInputElement>evt.target);
+        const cardElement: any = contentWrap.closest(".card");
+        this.cardDoubleClickEventHandler(cardElement);
       }
     });
 
@@ -55,6 +68,22 @@ class Column implements View {
     qs$(".column-wrap").addEventListener("input", ({ target }: Event) => {
       console.log((<HTMLInputElement>target).value);
     });
+  }
+
+  showConfirm(message: string):boolean {
+    const result = confirm(message);
+    return result;
+  }
+
+  cardDeleteClickEventHandler(evt: Event) {
+    const result = this.showConfirm(DELETE_MESSAGE);
+
+    if (result) {
+      const target = <HTMLInputElement>evt.target
+      const test: any = target.closest(".card-content-wrap");
+      const column: any = target.closest(".card-wrap");
+      column.removeChild(test);
+    }
   }
 
   cardDoubleClickEventHandler(card:HTMLInputElement) {
@@ -125,7 +154,7 @@ class Column implements View {
           <div class="card-icon">
             <span class="material-icons">description</span>
           </div>
-          <span class="close">&times;</span>
+          <span class="close card-close">&times;</span>
           <div class="content-wrap">
             <div class="card-content">${element.contents}</div>
             <div class="card-author">Added by <span>choisohyun</span></div>
