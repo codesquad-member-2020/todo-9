@@ -141,8 +141,12 @@
   border-color: rgba(27, 31, 35, 0.5);
 }
 
-.card-content-wrap {
+.card-list-wrap {
+  width: inherit;
   overflow-y: auto;
+}
+
+.card-content-wrap {
   width: 355px;
   display: flex;
   flex-direction: column;
@@ -204,8 +208,7 @@
 
 .material-icons,
 .card-content,
-.card-author,
-.close {
+.card-author {
   pointer-events: none;
 }
 
