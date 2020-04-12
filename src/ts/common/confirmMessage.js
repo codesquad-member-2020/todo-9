@@ -1,0 +1,1 @@
+export const DELETE_MESSAGE = "선택하신 카드를 삭제하시겠습니까?";

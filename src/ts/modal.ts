@@ -2,14 +2,14 @@ import View from "./view";
 
 interface IModal extends View {
   isVisible(): boolean;
-  showModal(columnId: string, cardId: string, content: string, target: Event): void;
+  showModal(columnId: string, cardId: string, content: string, contentElement: Element): void;
   hideModal(): void;
 }
 
 class Modal implements IModal {
   private visible: boolean = false;
   protected className: string;
-  protected currentEvent: any = null;
+  protected currentTargetElement: any = null;
 
   constructor(className: string) {
     this.className = className;
@@ -26,11 +26,11 @@ class Modal implements IModal {
     return this.visible;
   }
 
-  public showModal(columnId: string, cardId: string, content: any, target: Event): void {
+  public showModal(columnId: string, cardId: string, content: any, contentElement: Element): void {
     const textElement = this.getTextElement();
     (<HTMLInputElement>textElement).value = content;
-    this.currentEvent = target;
-    this.currentEvent = (<HTMLElement>this.currentEvent.currentTarget).querySelector(".card-content");
+
+    this.currentTargetElement = contentElement;
    
     this.changeModalDisplay('block');
     this.setVisible(true);
@@ -39,7 +39,8 @@ class Modal implements IModal {
   public hideModal(): void {
     const textElement = this.getTextElement();
     (<HTMLInputElement>textElement).value = ``;
-    this.currentEvent = null;
+
+    this.currentTargetElement = null;
 
     this.changeModalDisplay('none');
     this.setVisible(false);
