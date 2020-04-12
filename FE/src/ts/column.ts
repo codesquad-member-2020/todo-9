@@ -40,6 +40,8 @@ class Column implements View {
         this.plusBtnClickEventHandler(clickColumn);
       } else if ((<HTMLInputElement>target).className.includes("add-btn")) {
         this.cardAddBtnClickEventHandler(clickColumn);
+      } else if ((<HTMLInputElement>target).className.includes("cancel-btn")) {
+        this.plusBtnClickEventHandler(clickColumn);
       }
     });
 
@@ -91,6 +93,8 @@ class Column implements View {
     if (!this.getPlaceHolderVisible(cardInput)) {
       addClass(cardInput, "hidden");
       this.setPlaceholderVisible(true);
+      const input: any = column?.querySelector("#card-input");
+      input.value = null;
       return;
     }
     removeClass(cardInput, "hidden");
