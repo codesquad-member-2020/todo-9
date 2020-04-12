@@ -12,6 +12,7 @@ import {
   cardTemplate,
 } from "./columnTemplate";
 import { qs$, addClass, removeClass } from "./lib/util";
+import { DELETE_MESSAGE } from './common/confirmMessage';
 
 class Column implements View {
   private activity: Activity;
@@ -45,20 +46,52 @@ class Column implements View {
       }
     });
 
-    qs$(".column-wrap").addEventListener("dblclick", (evt: Event) =>
-      this.cardDoubleClickEventHandler(evt)
-    );
+    document.body.addEventListener("click", (evt : Event) => {
+      const className = (<HTMLInputElement>evt.target).className;
+
+      if (className === 'close card-close') {
+        this.cardDeleteClickEventHandler(evt);
+      }
+    });
+
+    document.body.addEventListener("dblclick", (evt : Event) => {
+      const className = (<HTMLInputElement>evt.target).className;
+      
+      if (className === "content-wrap") {
+        const contentWrap = (<HTMLInputElement>evt.target);
+        const cardElement: any = contentWrap.closest(".card");
+        this.cardDoubleClickEventHandler(cardElement);
+      }
+    });
 
     qs$(".column-wrap").addEventListener("input", (evt: Event) => {
       this.inputEventHandler(evt);
     });
   }
 
-  cardDoubleClickEventHandler(evt: Event) {
-    const content = (<HTMLInputElement>evt.currentTarget).querySelector(".card-content")?.innerHTML;
-    const columnId = (<HTMLInputElement>evt.currentTarget).id;
-    const cardId: any = (<HTMLInputElement>evt.currentTarget).querySelector(".card")?.id;
-    this.editNote.showModal(columnId, cardId, content, evt);
+  showConfirm(message: string):boolean {
+    const result = confirm(message);
+    return result;
+  }
+
+  cardDeleteClickEventHandler(evt: Event) {
+    const result = this.showConfirm(DELETE_MESSAGE);
+
+    if (result) {
+      const target = <HTMLInputElement>evt.target
+      const test: any = target.closest(".card-content-wrap");
+      const column: any = target.closest(".card-wrap");
+      column.removeChild(test);
+    }
+  }
+
+  cardDoubleClickEventHandler(card:HTMLInputElement) {
+    const contentElement: any = card.querySelector('.card-content');
+    const content = contentElement.innerHTML;
+    const cardId = card.id;
+    const columnId: any = card.closest('.column')?.id;
+
+    this.editNote.showModal(columnId, cardId, content, contentElement);
   }
 
   cardAddBtnClickEventHandler(clickColumn: any) {
