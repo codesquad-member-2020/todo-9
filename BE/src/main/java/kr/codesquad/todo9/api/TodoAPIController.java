@@ -149,4 +149,18 @@ public class TodoAPIController {
     public Board showBoard() {
         return showBoard(defaultBoardId);
     }
+
+    @GetMapping("/board/{boardId}/log/{boardKey}")
+    public Log showLog(@PathVariable Long boardId, @PathVariable int boardKey) {
+        List<Log> logs = boardRepository.findById(boardId).orElseThrow(RuntimeException::new).getLogs();
+        if (logs.size() < boardKey) {
+            throw new RuntimeException("해당하는 로그를 찾지 못했습니다.");
+        }
+        return logs.get(boardKey - 1);
+    }
+
+    @GetMapping("/log/{boardKey}")
+    public Log showLog(@PathVariable int boardKey) {
+        return showLog(defaultBoardId, boardKey);
+    }
 }
