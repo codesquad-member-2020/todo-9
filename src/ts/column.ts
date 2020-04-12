@@ -4,6 +4,13 @@ import View from "./view";
 import Activity from "./activity";
 import EditNote from "./editnote";
 import EditColumn from "./editcolumn";
+import {
+  getColumnWrap,
+  getColumnHeader,
+  getCardInput,
+  getCardContents,
+  cardTemplate,
+} from "./columnTemplate";
 import { qs$, addClass, removeClass } from "./lib/util";
 
 class Column implements View {
@@ -11,143 +18,114 @@ class Column implements View {
   private editNote: EditNote;
   private editColumn: EditColumn;
   private placeHolderVisible: boolean;
+  private inputValue: string;
 
   constructor(activity: Activity, editNote: EditNote, editColumn: EditColumn) {
     this.activity = activity;
     this.editNote = editNote;
     this.editColumn = editColumn;
     this.placeHolderVisible = false;
+    this.inputValue = "";
   }
 
   render(): string {
-    return `
-    <div class="header">
-      <div class="header-title">TODO 서비스</div>
-      <div class="menu">menu</div>
-    </div>
-    <div class="column-wrap">
-    </div>
-    `;
+    return getColumnWrap();
   }
 
   registerEventListener(): void {
     qs$(".column-wrap").addEventListener("click", ({ target }: Event) => {
-      console.log((<HTMLInputElement>target).className);
+      const clickColumn: any = (<HTMLInputElement>target).closest(".column");
 
       if ((<HTMLInputElement>target).className === "add") {
-        this.plusBtnClickEventHandler();
+        this.plusBtnClickEventHandler(clickColumn);
+      } else if ((<HTMLInputElement>target).className.includes("add-btn")) {
+        this.cardAddBtnClickEventHandler(clickColumn);
       }
     });
 
-    qs$(".card").addEventListener("dblclick", (evt: Event) =>
+    qs$(".column-wrap").addEventListener("dblclick", (evt: Event) =>
       this.cardDoubleClickEventHandler(evt)
     );
 
-    qs$(".column-wrap").addEventListener("input", ({ target }: Event) => {
-      console.log((<HTMLInputElement>target).value);
+    qs$(".column-wrap").addEventListener("input", (evt: Event) => {
+      this.inputEventHandler(evt);
     });
   }
 
-  cardDoubleClickEventHandler(evt:Event) {
-    const content = (<HTMLInputElement>evt.currentTarget).querySelector('.card-content')?.innerHTML;
-    const columnId = ((<HTMLInputElement>evt.currentTarget).id);
-    const cardId: any = (<HTMLInputElement>evt.currentTarget).querySelector('.card')?.id;
+  cardDoubleClickEventHandler(evt: Event) {
+    const content = (<HTMLInputElement>evt.currentTarget).querySelector(".card-content")?.innerHTML;
+    const columnId = (<HTMLInputElement>evt.currentTarget).id;
+    const cardId: any = (<HTMLInputElement>evt.currentTarget).querySelector(".card")?.id;
     this.editNote.showModal(columnId, cardId, content, evt);
   }
 
-  receiveInitialData({ columns }: any): void {
-    let columnTemplate: string = "";
-    columns.forEach((element: Element) => {
-      const { id, name, createdAt, updatedAt, archivedAt, order, cards, archived }: any = element;
-      columnTemplate += `
-      <div class="project-columns">
-        <div class="column" id="c${id}">
-          ${this.getColumnHeader(name, cards)}
-          <div class="card-wrap">
-          ${this.getCardInput()}
-          ${this.getCardContents(id, cards)}
-          </div>
-        </div>
-      </div>
-      `;
-    });
-    qs$(".column-wrap").innerHTML = columnTemplate;
+  cardAddBtnClickEventHandler(clickColumn: any) {
+    clickColumn
+      .querySelector(".card-list-wrap")
+      .insertAdjacentHTML("afterbegin", cardTemplate(0, 0, this.inputValue));
+
+    const input: any = clickColumn.querySelector("#card-input");
+    input.value = null;
+    input.focus;
+
+    this.inputValue = "";
+    clickColumn.querySelector(".add-btn").disabled = true;
   }
 
-  getColumnHeader(cardName: string, cards: Array<Object>): string {
-    const cardCount: number = cards ? cards.length : 0;
-    return `
-    <div class="column-header">
-      <div class="column-title-wrap">
-        <span class="card-count">${cardCount}</span>
-        <span class="column-title">${cardName}</span>
-      </div>
-      <div class="column-icon-wrap">
-        <span class="add">&plus;</span>
-        <span class="close">&times;</span>
-      </div>
-    </div>
-    `;
+  inputEventHandler({ target }: Event) {
+    const addBtn: any = (<HTMLInputElement>target).closest(".column")?.querySelector(".add-btn");
+    const DELAY_TIME: number = 300;
+    this.inputValue = (<HTMLInputElement>target).value;
+
+    let timer;
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      if (this.inputValue === "") addBtn.disabled = true;
+      addBtn.disabled = false;
+    }, DELAY_TIME);
   }
 
-  getCardInput(): string {
-    return `
-    <div class="input-wrap hidden">
-      <textarea id="card-input" placeholder="Enter a note"></textarea>
-      <div class="btn-wrap">
-        <button disabled="disabled" class="btn add-btn">Add</button>
-        <button class="btn cancel-btn">Cancel</button>
-      </div>
-    </div>
-    `;
-  }
+  plusBtnClickEventHandler(column: HTMLInputElement | null): void {
+    const cardInput = column?.querySelector(".input-wrap");
 
-  getCardContents(id: string, cards: Array<Object>): string {
-    if (!cards) return "";
-
-    let cardTemplate: string = "";
-
-    cards.forEach((element: any) => {
-      cardTemplate += `
-      <div class="card-content-wrap">
-        <div class="card" id="c${id}-${element.id}">
-          <div class="card-icon">
-            <span class="material-icons">description</span>
-          </div>
-          <span class="close">&times;</span>
-          <div class="content-wrap">
-            <div class="card-content">${element.contents}</div>
-            <div class="card-author">Added by <span>choisohyun</span></div>
-          </div>
-        </div>
-      </div>
-      `;
-    });
-
-    return cardTemplate;
-  }
-
-  //Column 영역의 '+' 버튼을 클릭 했을 때 호출되는 핸들러
-  plusBtnClickEventHandler(): void {
-    //Placeholder 가 닫혀있다면
-    //Placeholder 를 open
-    //Placeholder 가 열려잇다면
-    //Placeholder 를 close
-    if (this.getPlaceHolderVisible()) {
-      //DOM 조작을 통한 classList remove
-      this.setPlaceholderVisible(false);
-    } else {
-      //DOM 조작을 통한 classList add
+    if (!this.getPlaceHolderVisible(cardInput)) {
+      addClass(cardInput, "hidden");
       this.setPlaceholderVisible(true);
+      return;
     }
+    removeClass(cardInput, "hidden");
+    this.setPlaceholderVisible(false);
   }
 
   setPlaceholderVisible(visible: boolean): void {
     this.placeHolderVisible = visible;
   }
 
-  getPlaceHolderVisible(): boolean {
-    return false;
+  getPlaceHolderVisible(cardInput: Element | null | undefined): boolean {
+    if (!cardInput) return false;
+    return cardInput.classList.contains("hidden");
+  }
+
+  receiveInitialData({ columns }: any): void {
+    let columnTemplate: string = "";
+
+    columns.forEach((element: Element) => {
+      const { id, name, cards }: any = element;
+      columnTemplate += `
+      <div class="project-columns">
+        <div class="column" id="c${id}">
+          ${getColumnHeader(name, cards)}
+          <div class="card-wrap">
+            ${getCardInput()}
+            <div class="card-list-wrap">
+              ${getCardContents(id, cards)}
+            </div>
+          </div>
+        </div>
+      </div>
+      `;
+    });
+    qs$(".column-wrap").innerHTML = columnTemplate;
   }
 }
 
