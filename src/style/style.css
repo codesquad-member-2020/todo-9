@@ -134,8 +134,8 @@
   background-image: linear-gradient(-180deg, #34d058, #28a745 90%);
 }
 
-.add-btn:hover,
-.add-btn:focus {
+.add-btn:hover:not([disabled]),
+.add-btn:focus:not([disabled]) {
   background-color: #279f43;
   background-image: none;
   border-color: rgba(27, 31, 35, 0.5);
