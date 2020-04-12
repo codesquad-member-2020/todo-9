@@ -141,6 +141,7 @@ public class TodoAPIController {
         for (Column column : columns) {
             Collections.sort(column.getCards());
         }
+        Collections.reverse(board.getLogs());
         return board;
     }
 
