@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack -w",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build-dev": "webpack -w --mode development",
+    "build": "webpack --mode production"
   },
   "author": "",
   "license": "ISC",
@@ -17,6 +17,7 @@
     "@babel/preset-env": "^7.9.5",
     "@babel/preset-typescript": "^7.9.0",
     "babel-loader": "^8.1.0",
+    "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^3.5.1",
     "css-modules-typescript-loader": "^4.0.0",
     "html-loader": "^1.1.0",
@@ -27,5 +28,8 @@
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3"
+  },
+  "dependencies": {
+    "dotenv-webpack": "^1.7.0"
   }
 }
