@@ -54,7 +54,6 @@ class Column implements View {
       }
     });
 
-
     document.body.addEventListener("dblclick", (evt : Event) => {
       const className = (<HTMLInputElement>evt.target).className;
       
