@@ -95,13 +95,16 @@ class Column implements IView {
   }
 
   cardAddBtnClickEventHandler(clickColumn: any) {
-    clickColumn
-      .querySelector(".card-list-wrap")
-      .insertAdjacentHTML("afterbegin", cardTemplate("0", "0", this.inputValue));
-
+    const cardList: any = clickColumn.querySelector(".card-list-wrap");
     const input: any = clickColumn.querySelector("#card-input");
+    const columnId: string = clickColumn.id.substring(1);
+    const cardCount: any = clickColumn.querySelector(".card-count");
+    const cardId: string = (parseInt(cardCount.innerText) + 1).toString();
+
+    cardList?.insertAdjacentHTML("afterbegin", cardTemplate(columnId, cardId, this.inputValue));
+
     input.value = null;
-    input.focus;
+    input.focus();
 
     this.inputValue = "";
     clickColumn.querySelector(".add-btn").disabled = true;
@@ -130,8 +133,8 @@ class Column implements IView {
       return;
     }
     removeClass(cardInput, "hidden");
-    input.focus();
     this.setPlaceholderVisible(false);
+    input.focus();
   }
 
   setPlaceholderVisible(visible: boolean): void {
