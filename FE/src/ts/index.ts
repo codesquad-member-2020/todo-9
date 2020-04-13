@@ -6,7 +6,7 @@ import EditColumn from "./editcolumn";
 import Activity from "./activity";
 
 import fetchRequest from "./common/fetchRequest";
-import { configs } from "./common/configs";
+import { configs, SERVICE_URL, INIT_DATA_URI } from "./common/configs";
 import { METHOD } from "./common/constants";
 
 window.addEventListener("DOMContentLoaded", (event) => {
@@ -19,7 +19,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
   editNote.registerEventListener();
 
-  fetchRequest(configs.apiUrl, METHOD.GET)
+  fetchRequest(SERVICE_URL + INIT_DATA_URI, METHOD.GET)
     .then((response) => response.json())
     .then((data) => column.receiveInitialData(data))
     .then(() => column.registerEventListener());

@@ -53,7 +53,7 @@ const cardTemplate = (id: string, cardId: string, content: string): string => {
         <div class="card-icon">
           <span class="material-icons">description</span>
         </div>
-        <span class="close">&times;</span>
+        <span class="close card-close">&times;</span>
         <div class="content-wrap">
           <div class="card-content">${content}</div>
           <div class="card-author">Added by <span>choisohyun</span></div>
