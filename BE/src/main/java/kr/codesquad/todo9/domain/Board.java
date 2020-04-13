@@ -43,6 +43,16 @@ public class Board {
         card.setUpdatedUserId(user.getId());
     }
 
+    public void deleteCard(int boardKey, int columnKey, User user) {
+        Card card = this.columns.get(boardKey).getCards().get(columnKey);
+        this.addLog("delete", "card", user, null, boardKey, columnKey);
+        LocalDateTime now = LocalDateTime.now();
+        card.setArchived(true);
+        card.setUpdatedAt(now);
+        card.setArchivedAt(now);
+        card.setUpdatedUserId(user.getId());
+    }
+
     public Log getLastLog() {
         return this.logs.get(this.logs.size() - 1);
     }
