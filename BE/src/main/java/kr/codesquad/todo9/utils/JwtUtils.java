@@ -2,6 +2,7 @@ package kr.codesquad.todo9.utils;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import kr.codesquad.todo9.error.exception.LoginRequiredException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +46,7 @@ public class JwtUtils {
         } catch (JwtException ex) {
             log.error("인증되지 않은 jwt token입니다. jws: {}", jws);
             // Custom Exception Unauthorized Exception
-            throw new RuntimeException();
+            throw new LoginRequiredException("인증되지 않은 jwt token입니다.");
         }
     }
 }
