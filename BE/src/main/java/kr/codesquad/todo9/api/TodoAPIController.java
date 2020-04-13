@@ -54,7 +54,7 @@ public class TodoAPIController {
         return userRepository.findAll();
     }
 
-    @PostMapping("user/{name}")
+    @PostMapping("/user/{name}")
     public Result addUser(@PathVariable String name) {
         User newUser = new User();
         newUser.setUsername(name);
