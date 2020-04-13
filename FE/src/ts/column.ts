@@ -12,7 +12,7 @@ import {
   cardTemplate,
 } from "./columnTemplate";
 import { qs$, addClass, removeClass } from "./lib/util";
-import { DELETE_MESSAGE } from './common/confirmMessage';
+import { DELETE_MESSAGE } from "./common/confirmMessage";
 
 class Column implements IView {
   private activity: Activity;
@@ -46,19 +46,19 @@ class Column implements IView {
       }
     });
 
-    document.body.addEventListener("click", (evt : Event) => {
+    document.body.addEventListener("click", (evt: Event) => {
       const className = (<HTMLInputElement>evt.target).className;
 
-      if (className === 'close card-close') {
+      if (className === "close card-close") {
         this.cardDeleteClickEventHandler(evt);
       }
     });
 
-    document.body.addEventListener("dblclick", (evt : Event) => {
+    document.body.addEventListener("dblclick", (evt: Event) => {
       const className = (<HTMLInputElement>evt.target).className;
-      
+
       if (className === "content-wrap") {
-        const contentWrap = (<HTMLInputElement>evt.target);
+        const contentWrap = <HTMLInputElement>evt.target;
         const cardElement: any = contentWrap.closest(".card");
         this.cardDoubleClickEventHandler(cardElement);
       }
@@ -69,7 +69,7 @@ class Column implements IView {
     });
   }
 
-  showConfirm(message: string):boolean {
+  showConfirm(message: string): boolean {
     const result = confirm(message);
     return result;
   }
@@ -78,18 +78,18 @@ class Column implements IView {
     const result = this.showConfirm(DELETE_MESSAGE);
 
     if (result) {
-      const target = <HTMLInputElement>evt.target
+      const target = <HTMLInputElement>evt.target;
       const test: any = target.closest(".card-content-wrap");
       const column: any = target.closest(".card-wrap");
       column.removeChild(test);
     }
   }
 
-  cardDoubleClickEventHandler(card:HTMLInputElement) {
-    const contentElement: any = card.querySelector('.card-content');
+  cardDoubleClickEventHandler(card: HTMLInputElement) {
+    const contentElement: any = card.querySelector(".card-content");
     const content = contentElement.innerHTML;
     const cardId = card.id;
-    const columnId: any = card.closest('.column')?.id;
+    const columnId: any = card.closest(".column")?.id;
 
     this.editNote.showModal(columnId, cardId, content, contentElement);
   }
@@ -109,28 +109,28 @@ class Column implements IView {
 
   inputEventHandler({ target }: Event) {
     const addBtn: any = (<HTMLInputElement>target).closest(".column")?.querySelector(".add-btn");
-    const DELAY_TIME: number = 300;
     this.inputValue = (<HTMLInputElement>target).value;
 
-    let timer;
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      if (this.inputValue === "") addBtn.disabled = true;
-      addBtn.disabled = false;
-    }, DELAY_TIME);
+    if (this.inputValue === "") {
+      addBtn.disabled = true;
+      return;
+    }
+    addBtn.disabled = false;
   }
 
   plusBtnClickEventHandler(column: HTMLInputElement | null): void {
     const cardInput = column?.querySelector(".input-wrap");
+    const input: any = column?.querySelector("#card-input");
 
     if (!this.getPlaceHolderVisible(cardInput)) {
       addClass(cardInput, "hidden");
       this.setPlaceholderVisible(true);
-      const input: any = column?.querySelector("#card-input");
       input.value = null;
+
       return;
     }
     removeClass(cardInput, "hidden");
+    input.focus();
     this.setPlaceholderVisible(false);
   }
 
