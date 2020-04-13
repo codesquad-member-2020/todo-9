@@ -1,6 +1,6 @@
-import View from "./view"
+import IView from "./view"
 
-class Activity implements View{
+class Activity implements IView{
   constructor() {
   }
 

@@ -1,6 +1,6 @@
-interface View {
+interface IView {
   render(): string;
   registerEventListener(): void;
 }
 
-export default View;
+export default IView;

@@ -1,7 +1,7 @@
 import "../style/style.css";
 
-import View from "./view";
-import Activity from "./activity";
+import IView from "./view";
+import Activity from "./Activity";
 import EditNote from "./editnote";
 import EditColumn from "./editcolumn";
 import {
@@ -14,7 +14,7 @@ import {
 import { qs$, addClass, removeClass } from "./lib/util";
 import { DELETE_MESSAGE } from './common/confirmMessage';
 
-class Column implements View {
+class Column implements IView {
   private activity: Activity;
   private editNote: EditNote;
   private editColumn: EditColumn;
@@ -97,7 +97,7 @@ class Column implements View {
   cardAddBtnClickEventHandler(clickColumn: any) {
     clickColumn
       .querySelector(".card-list-wrap")
-      .insertAdjacentHTML("afterbegin", cardTemplate(0, 0, this.inputValue));
+      .insertAdjacentHTML("afterbegin", cardTemplate("0", "0", this.inputValue));
 
     const input: any = clickColumn.querySelector("#card-input");
     input.value = null;
