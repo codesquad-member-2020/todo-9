@@ -79,9 +79,9 @@ class Column implements IView {
 
     if (result) {
       const target = <HTMLInputElement>evt.target
-      const test: any = target.closest(".card-content-wrap");
-      const column: any = target.closest(".card-wrap");
-      column.removeChild(test);
+      const card: any = target.closest(".card-content-wrap");
+      const column: any = target.closest(".card-list-wrap");
+      column.removeChild(card);
     }
   }
 
