@@ -1,6 +1,9 @@
 package kr.codesquad.todo9.api;
 
 import kr.codesquad.todo9.domain.*;
+import kr.codesquad.todo9.error.exception.BoardNotFoundException;
+import kr.codesquad.todo9.error.exception.LogNotFoundException;
+import kr.codesquad.todo9.error.exception.UserNotFoundException;
 import kr.codesquad.todo9.repository.BoardRepository;
 import kr.codesquad.todo9.repository.UserRepository;
 import kr.codesquad.todo9.responseobjects.Result;
@@ -9,10 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -29,8 +30,7 @@ public class TodoAPIController {
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
 
-    public TodoAPIController(UserRepository userRepository,
-                             BoardRepository boardRepository) {
+    public TodoAPIController(UserRepository userRepository, BoardRepository boardRepository) {
         this.userRepository = userRepository;
         this.boardRepository = boardRepository;
     }
@@ -38,7 +38,7 @@ public class TodoAPIController {
     @PostMapping("/login")
     public ResponseEntity<Result> login(HttpServletResponse httpServletResponse) {
         Result result = new Result(true, "success");
-        User user = userRepository.findById(defaultUserId).orElseThrow(RuntimeException::new);
+        User user = userRepository.findById(defaultUserId).orElseThrow(UserNotFoundException::new);
         String jws = JwtUtils.createJws(user);
         log.debug("user: {}", user);
         log.debug("jws: {}", jws);
@@ -68,7 +68,7 @@ public class TodoAPIController {
 
     @GetMapping("/board/{boardId}/column/{boardKey}/card/list")
     public List<Card> showCardListOfColumnOfBoard(@PathVariable Long boardId, @PathVariable int boardKey) {
-        Column column = boardRepository.findById(boardId).orElseThrow(RuntimeException::new).getColumns().get(boardKey);
+        Column column = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).getColumns().get(boardKey);
         log.debug("column: {}", column);
 
         List<Card> cards = column.getCards();
@@ -83,28 +83,34 @@ public class TodoAPIController {
     }
 
     @PostMapping("/board/{boardId}/column/{boardKey}/card/{contents}")
+    @Transactional
     public Result addCard(@PathVariable Long boardId, @PathVariable int boardKey, @PathVariable String contents) {
-        User user = userRepository.findById(defaultUserId).orElseThrow(RuntimeException::new);
+        User user = userRepository.findById(defaultUserId).orElseThrow(UserNotFoundException::new);
         log.debug("firstUser: {}", user);
 
-        Board board = boardRepository.findById(boardId).orElseThrow(RuntimeException::new);
+        Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
         log.debug("board: {}", board);
 
         board.addCard(boardKey, contents, user);
         boardRepository.save(board);
         log.debug("save after board: {}", board);
 
+        board.addLog("create", "card", user, contents, boardKey);
+        boardRepository.save(board);
+        log.debug("save log after board: {}", board);
+
         return new Result(true, "success");
     }
 
     @PostMapping("/column/{boardKey}/card/{contents}")
+    @Transactional
     public Result addCard(@PathVariable int boardKey, @PathVariable String contents) {
         return addCard(defaultBoardId, boardKey, contents);
     }
 
     @GetMapping("/board/{boardId}/column/list")
     public List<Column> showColumnList(@PathVariable Long boardId) {
-        List<Column> columns = boardRepository.findById(boardId).orElseThrow(RuntimeException::new).getColumns();
+        List<Column> columns = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).getColumns();
         for (Column column : columns) {
             Collections.sort(column.getCards());
         }
@@ -118,7 +124,7 @@ public class TodoAPIController {
 
     @GetMapping("/board/{boardId}/log/list")
     public List<Log> showLogList(@PathVariable Long boardId) {
-        List<Log> logs = boardRepository.findById(boardId).orElseThrow(RuntimeException::new).getLogs();
+        List<Log> logs = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).getLogs();
         Collections.reverse(logs);
         return logs;
     }
@@ -130,16 +136,54 @@ public class TodoAPIController {
 
     @GetMapping("/board/{boardId}")
     public Board showBoard(@PathVariable Long boardId) {
-        Board board = boardRepository.findById(boardId).orElseThrow(RuntimeException::new);
+        Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
         List<Column> columns = board.getColumns();
         for (Column column : columns) {
             Collections.sort(column.getCards());
         }
+        Collections.reverse(board.getLogs());
         return board;
     }
 
     @GetMapping("/board")
     public Board showBoard() {
         return showBoard(defaultBoardId);
+    }
+
+    @GetMapping("/board/{boardId}/log/{boardKey}")
+    public Log showLog(@PathVariable Long boardId, @PathVariable int boardKey) {
+        List<Log> logs = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).getLogs();
+        if (logs.size() < boardKey) {
+            throw new LogNotFoundException();
+        }
+        return logs.get(boardKey - 1);
+    }
+
+    @GetMapping("/log/{boardKey}")
+    public Log showLog(@PathVariable int boardKey) {
+        return showLog(defaultBoardId, boardKey);
+    }
+
+    @PutMapping("/board/{boardId}/column/{boardKey}/card/{columnKey}")
+    public Result editCard(@PathVariable Long boardId,
+                           @PathVariable int boardKey,
+                           @PathVariable int columnKey,
+                           @RequestBody String contents) {
+        User user = userRepository.findById(defaultUserId).orElseThrow(UserNotFoundException::new);
+        log.debug("firstUser: {}", user);
+
+        Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
+        log.debug("board: {}", board);
+
+        board.updateCard(boardKey, columnKey, contents, user);
+        boardRepository.save(board);
+        log.debug("save after board: {}", board);
+
+        return new Result(true, "success");
+    }
+
+    @PutMapping("/column/{boardKey}/card/{columnKey}")
+    public Result editCard(@PathVariable int boardKey, @PathVariable int columnKey, @RequestBody String contents) {
+        return this.editCard(defaultBoardId, boardKey, columnKey, contents);
     }
 }

@@ -118,18 +118,43 @@
   border-radius: 0.25em;
   -webkit-appearance: none;
   width: 49%;
+  cursor: pointer;
 }
 
-.add-btn {
+.add-btn:disabled {
   color: hsla(0, 0%, 100%, 0.75);
   background-color: #94d3a2;
   background-image: none;
   border-color: rgba(27, 31, 35, 0.2);
   box-shadow: none;
+  cursor: default;
+}
+
+.add-btn {
+  color: #fff;
+  background-color: #28a745;
+  background-image: linear-gradient(-180deg, #34d058, #28a745 90%);
+}
+
+.add-btn:hover:not([disabled]),
+.add-btn:focus:not([disabled]) {
+  background-color: #279f43;
+  background-image: none;
+  border-color: rgba(27, 31, 35, 0.5);
+}
+
+.cancel-btn:hover,
+.cancel-btn:focus {
+  background-color: #e9ecef;
+  border-color: rgba(27, 31, 35, 0.35);
+}
+
+.card-list-wrap {
+  width: inherit;
+  overflow-y: auto;
 }
 
 .card-content-wrap {
-  overflow-y: auto;
   width: 355px;
   display: flex;
   flex-direction: column;
@@ -144,6 +169,11 @@
   border-radius: 6px;
   border: 1px solid #e1e4e8;
   margin: 3px 0;
+  user-select: none; /* supported by Chrome and Opera */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
 }
 
 .content-wrap {
@@ -194,6 +224,12 @@
   color: #666;
   font-size: 28px;
   font-weight: bold;
+}
+
+.material-icons,
+.card-content,
+.card-author {
+  pointer-events: none;
 }
 
 .add:hover,
