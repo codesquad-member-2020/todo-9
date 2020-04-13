@@ -49,11 +49,21 @@ public class GlobalRestExceptionHandler {
     }
 
     /**
+     * 범위 벗어나는 에러
+     */
+    @ExceptionHandler(IndexOutOfBoundsException.class)
+    protected ResponseEntity<ErrorResponse> handleIndexOutOfBoundException(IndexOutOfBoundsException e) {
+        log.error("handleIndexOutOfBoundException", e);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.ENTITY_NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+    }
+
+    /**
      * 처리되지 않은 에러
      */
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> handleException(Exception e) {
-        log.error("handleEntityNotFoundException", e);
+        log.error("handleException", e);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
