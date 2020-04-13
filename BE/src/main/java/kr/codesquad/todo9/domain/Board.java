@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
-    
+
     private static final Logger log = LoggerFactory.getLogger(Board.class);
 
     private @Id Long id;
@@ -41,6 +41,10 @@ public class Board {
         card.setContents(contents);
         card.setUpdatedAt(LocalDateTime.now());
         card.setUpdatedUserId(user.getId());
+    }
+
+    public Log getLastLog() {
+        return this.logs.get(this.logs.size() - 1);
     }
 
     private Log createLog(String action, String type, User user, String contents, int boardKey) {

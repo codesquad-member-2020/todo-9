@@ -84,7 +84,7 @@ public class TodoAPIController {
 
     @PostMapping("/board/{boardId}/column/{boardKey}/card/{contents}")
     @Transactional
-    public Result addCard(@PathVariable Long boardId, @PathVariable int boardKey, @PathVariable String contents) {
+    public Log addCard(@PathVariable Long boardId, @PathVariable int boardKey, @PathVariable String contents) {
         User user = userRepository.findById(defaultUserId).orElseThrow(UserNotFoundException::new);
         log.debug("firstUser: {}", user);
 
@@ -96,15 +96,14 @@ public class TodoAPIController {
         log.debug("save after board: {}", board);
 
         board.addLog("create", "card", user, contents, boardKey);
-        boardRepository.save(board);
+        board = boardRepository.save(board);
         log.debug("save log after board: {}", board);
-
-        return new Result(true, "success");
+        return board.getLastLog();
     }
 
     @PostMapping("/column/{boardKey}/card/{contents}")
     @Transactional
-    public Result addCard(@PathVariable int boardKey, @PathVariable String contents) {
+    public Log addCard(@PathVariable int boardKey, @PathVariable String contents) {
         return addCard(defaultBoardId, boardKey, contents);
     }
 
@@ -165,10 +164,10 @@ public class TodoAPIController {
     }
 
     @PutMapping("/board/{boardId}/column/{boardKey}/card/{columnKey}")
-    public Result editCard(@PathVariable Long boardId,
-                           @PathVariable int boardKey,
-                           @PathVariable int columnKey,
-                           @RequestBody String contents) {
+    public Log editCard(@PathVariable Long boardId,
+                        @PathVariable int boardKey,
+                        @PathVariable int columnKey,
+                        @RequestBody String contents) {
         User user = userRepository.findById(defaultUserId).orElseThrow(UserNotFoundException::new);
         log.debug("firstUser: {}", user);
 
@@ -176,14 +175,13 @@ public class TodoAPIController {
         log.debug("board: {}", board);
 
         board.updateCard(boardKey, columnKey, contents, user);
-        boardRepository.save(board);
+        board = boardRepository.save(board);
         log.debug("save after board: {}", board);
-
-        return new Result(true, "success");
+        return board.getLastLog();
     }
 
     @PutMapping("/column/{boardKey}/card/{columnKey}")
-    public Result editCard(@PathVariable int boardKey, @PathVariable int columnKey, @RequestBody String contents) {
+    public Log editCard(@PathVariable int boardKey, @PathVariable int columnKey, @RequestBody String contents) {
         return this.editCard(defaultBoardId, boardKey, columnKey, contents);
     }
 }
