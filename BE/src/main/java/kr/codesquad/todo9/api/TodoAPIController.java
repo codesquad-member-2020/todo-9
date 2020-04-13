@@ -1,6 +1,7 @@
 package kr.codesquad.todo9.api;
 
 import kr.codesquad.todo9.domain.*;
+import kr.codesquad.todo9.error.exception.UserNotFoundException;
 import kr.codesquad.todo9.repository.BoardRepository;
 import kr.codesquad.todo9.repository.UserRepository;
 import kr.codesquad.todo9.responseobjects.Result;
@@ -35,7 +36,7 @@ public class TodoAPIController {
     @PostMapping("/login")
     public ResponseEntity<Result> login(HttpServletResponse httpServletResponse) {
         Result result = new Result(true, "success");
-        User user = userRepository.findById(defaultUserId).orElseThrow(RuntimeException::new);
+        User user = userRepository.findById(defaultUserId).orElseThrow(UserNotFoundException::new);
         String jws = JwtUtils.createJws(user);
         log.debug("user: {}", user);
         log.debug("jws: {}", jws);
@@ -82,7 +83,7 @@ public class TodoAPIController {
     @PostMapping("/board/{boardId}/column/{boardKey}/card/{contents}")
     @Transactional
     public Result addCard(@PathVariable Long boardId, @PathVariable int boardKey, @PathVariable String contents) {
-        User user = userRepository.findById(defaultUserId).orElseThrow(RuntimeException::new);
+        User user = userRepository.findById(defaultUserId).orElseThrow(UserNotFoundException::new);
         log.debug("firstUser: {}", user);
 
         Board board = boardRepository.findById(boardId).orElseThrow(RuntimeException::new);
@@ -166,7 +167,7 @@ public class TodoAPIController {
                            @PathVariable int boardKey,
                            @PathVariable int columnKey,
                            @RequestBody String contents) {
-        User user = userRepository.findById(defaultUserId).orElseThrow(RuntimeException::new);
+        User user = userRepository.findById(defaultUserId).orElseThrow(UserNotFoundException::new);
         log.debug("firstUser: {}", user);
 
         Board board = boardRepository.findById(boardId).orElseThrow(RuntimeException::new);
