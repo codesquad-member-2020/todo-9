@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -71,7 +72,12 @@ public class TodoAPIController {
         Column column = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).getColumns().get(boardKey);
         log.debug("column: {}", column);
 
-        List<Card> cards = column.getCards();
+        List<Card> cards = new ArrayList<>();
+        for (Card card : column.getCards()) {
+            if (!card.getArchived()) {
+                cards.add(card);
+            }
+        }
         Collections.sort(cards);
         log.debug("cards: {}", cards);
         return cards;
@@ -111,7 +117,14 @@ public class TodoAPIController {
     public List<Column> showColumnList(@PathVariable Long boardId) {
         List<Column> columns = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).getColumns();
         for (Column column : columns) {
-            Collections.sort(column.getCards());
+            List<Card> cards = new ArrayList<>();
+            for (Card card : column.getCards()) {
+                if (!card.getArchived()) {
+                    cards.add(card);
+                }
+            }
+            Collections.sort(cards);
+            column.setCards(cards);
         }
         return columns;
     }
@@ -138,7 +151,14 @@ public class TodoAPIController {
         Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
         List<Column> columns = board.getColumns();
         for (Column column : columns) {
-            Collections.sort(column.getCards());
+            List<Card> cards = new ArrayList<>();
+            for (Card card : column.getCards()) {
+                if (!card.getArchived()) {
+                    cards.add(card);
+                }
+            }
+            Collections.sort(cards);
+            column.setCards(cards);
         }
         Collections.reverse(board.getLogs());
         return board;
@@ -183,5 +203,26 @@ public class TodoAPIController {
     @PutMapping("/column/{boardKey}/card/{columnKey}")
     public Log editCard(@PathVariable int boardKey, @PathVariable int columnKey, @RequestBody String contents) {
         return this.editCard(defaultBoardId, boardKey, columnKey, contents);
+    }
+
+    @DeleteMapping("/board/{boardId}/column/{boardKey}/card/{columnKey}")
+    public Log deleteCard(@PathVariable Long boardId,
+                          @PathVariable int boardKey,
+                          @PathVariable int columnKey) {
+        User user = userRepository.findById(defaultUserId).orElseThrow(UserNotFoundException::new);
+        log.debug("firstUser: {}", user);
+
+        Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
+        log.debug("board: {}", board);
+
+        board.deleteCard(boardKey, columnKey, user);
+        board = boardRepository.save(board);
+        log.debug("save after board: {}", board);
+        return board.getLastLog();
+    }
+
+    @DeleteMapping("/column/{boardKey}/card/{columnKey}")
+    public Log deleteCard(@PathVariable int boardKey, @PathVariable int columnKey) {
+        return deleteCard(defaultBoardId, boardKey, columnKey);
     }
 }
