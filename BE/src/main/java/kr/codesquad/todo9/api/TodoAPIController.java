@@ -10,10 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -30,8 +27,7 @@ public class TodoAPIController {
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
 
-    public TodoAPIController(UserRepository userRepository,
-                             BoardRepository boardRepository) {
+    public TodoAPIController(UserRepository userRepository, BoardRepository boardRepository) {
         this.userRepository = userRepository;
         this.boardRepository = boardRepository;
     }
@@ -104,6 +100,7 @@ public class TodoAPIController {
     }
 
     @PostMapping("/column/{boardKey}/card/{contents}")
+    @Transactional
     public Result addCard(@PathVariable int boardKey, @PathVariable String contents) {
         return addCard(defaultBoardId, boardKey, contents);
     }
@@ -162,5 +159,28 @@ public class TodoAPIController {
     @GetMapping("/log/{boardKey}")
     public Log showLog(@PathVariable int boardKey) {
         return showLog(defaultBoardId, boardKey);
+    }
+
+    @PutMapping("/board/{boardId}/column/{boardKey}/card/{columnKey}")
+    public Result editCard(@PathVariable Long boardId,
+                           @PathVariable int boardKey,
+                           @PathVariable int columnKey,
+                           @RequestBody String contents) {
+        User user = userRepository.findById(defaultUserId).orElseThrow(RuntimeException::new);
+        log.debug("firstUser: {}", user);
+
+        Board board = boardRepository.findById(boardId).orElseThrow(RuntimeException::new);
+        log.debug("board: {}", board);
+
+        board.updateCard(boardKey, columnKey, contents, user);
+        boardRepository.save(board);
+        log.debug("save after board: {}", board);
+
+        return new Result(true, "success");
+    }
+
+    @PutMapping("/column/{boardKey}/card/{columnKey}")
+    public Result editCard(@PathVariable int boardKey, @PathVariable int columnKey, @RequestBody String contents) {
+        return this.editCard(defaultBoardId, boardKey, columnKey, contents);
     }
 }

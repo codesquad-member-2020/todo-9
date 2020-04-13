@@ -18,6 +18,30 @@ public class Log {
     private LocalDateTime actionedAt;
     private Long userId;
 
+    public Log() {}
+
+    public Log(String action,
+               String type,
+               String beforeCardContents,
+               String afterCardContents,
+               Long beforeCardId,
+               Long afterCardId,
+               Long fromColumnId,
+               Long toColumnId,
+               LocalDateTime actionedAt,
+               Long userId) {
+        this.action = action;
+        this.type = type;
+        this.beforeCardContents = beforeCardContents;
+        this.afterCardContents = afterCardContents;
+        this.beforeCardId = beforeCardId;
+        this.afterCardId = afterCardId;
+        this.fromColumnId = fromColumnId;
+        this.toColumnId = toColumnId;
+        this.actionedAt = actionedAt;
+        this.userId = userId;
+    }
+
     public Long getId() {
         return id;
     }

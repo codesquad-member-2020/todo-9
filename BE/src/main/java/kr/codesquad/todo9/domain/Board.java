@@ -22,8 +22,8 @@ public class Board {
         this.name = name;
     }
 
-    public void addCard(int columnIndex, String contents, User user) {
-        List<Card> cards = columns.get(columnIndex).getCards();
+    public void addCard(int boardKey, String contents, User user) {
+        List<Card> cards = columns.get(boardKey).getCards();
         cards.add(createCard(contents, user));
     }
 
@@ -31,19 +31,63 @@ public class Board {
         logs.add(createLog(action, type, user, contents, boardKey));
     }
 
+    public void addLog(String action, String type, User user, String contents, int boardKey, int columnKey) {
+        logs.add(createLog(action, type, user, contents, boardKey, columnKey));
+    }
+
+    public void updateCard(int boardKey, int columnKey, String contents, User user) {
+        Card card = this.columns.get(boardKey).getCards().get(columnKey);
+        this.addLog("edit", "card", user, contents, boardKey, columnKey);
+        card.setContents(contents);
+        card.setUpdatedAt(LocalDateTime.now());
+        card.setUpdatedUserId(user.getId());
+    }
+
     private Log createLog(String action, String type, User user, String contents, int boardKey) {
-        Log newLog = new Log();
-        newLog.setAction(action);
-        newLog.setType(type);
-        newLog.setUserId(user.getId());
-        newLog.setAfterCardContents(contents);
-        int boardId = boardKey - 1;
-        List<Card> cards = this.columns.get(boardId).getCards();
-        newLog.setAfterCardId(cards.get(cards.size() - 1).getId());
-        newLog.setFromColumnId((long) boardKey);
-        newLog.setToColumnId((long) boardKey);
-        newLog.setActionedAt(LocalDateTime.now());
-        return newLog;
+        List<Card> cards = this.columns.get(boardKey).getCards();
+        return createLog(action,
+                type,
+                null,
+                contents,
+                null,
+                cards.get(cards.size() - 1).getId(),
+                (long) boardKey,
+                (long) boardKey,
+                user);
+    }
+
+    private Log createLog(String action, String type, User user, String contents, int boardKey, int columnKey) {
+        Card card = this.columns.get(boardKey).getCards().get(columnKey);
+        return createLog(action,
+                type,
+                card.getContents(),
+                contents,
+                card.getId(),
+                card.getId(),
+                (long) boardKey,
+                (long) boardKey,
+                user);
+    }
+
+    private Log createLog(String action,
+                          String type,
+                          String beforeCardContents,
+                          String afterCardContents,
+                          Long beforeCardId,
+                          Long afterCardId,
+                          Long fromColumnId,
+                          Long toColumnId,
+                          User user) {
+        return new Log(action,
+                type,
+                beforeCardContents,
+                afterCardContents,
+                beforeCardId,
+                afterCardId,
+                fromColumnId,
+                toColumnId,
+                LocalDateTime.now(),
+                user.getId());
     }
 
     private Card createCard(String contents, User user) {
