@@ -13,6 +13,8 @@ public enum ErrorCode {
     LOGIN_REQUIRED(401, "U002", " 로그인을 해주세요."),
     // Board
     BOARD_NOT_FOUND(404, "B001", " 해당 Board가 존재하지 않습니다."),
+    // Log
+    LOG_NOT_FOUND(404, "L001", " 해당 Log가 존재하지 않습니다.")
     ;
 
     private final String code;

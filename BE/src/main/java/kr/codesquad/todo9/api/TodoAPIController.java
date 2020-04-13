@@ -2,6 +2,7 @@ package kr.codesquad.todo9.api;
 
 import kr.codesquad.todo9.domain.*;
 import kr.codesquad.todo9.error.exception.BoardNotFoundException;
+import kr.codesquad.todo9.error.exception.LogNotFoundException;
 import kr.codesquad.todo9.error.exception.UserNotFoundException;
 import kr.codesquad.todo9.repository.BoardRepository;
 import kr.codesquad.todo9.repository.UserRepository;
@@ -153,7 +154,7 @@ public class TodoAPIController {
     public Log showLog(@PathVariable Long boardId, @PathVariable int boardKey) {
         List<Log> logs = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).getLogs();
         if (logs.size() < boardKey) {
-            throw new RuntimeException("해당하는 로그를 찾지 못했습니다.");
+            throw new LogNotFoundException();
         }
         return logs.get(boardKey - 1);
     }
