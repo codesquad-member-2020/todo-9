@@ -102,6 +102,7 @@ class Column implements IView {
     const cardId: string = (parseInt(cardCount.innerText) + 1).toString();
 
     cardList?.insertAdjacentHTML("afterbegin", cardTemplate(columnId, cardId, this.inputValue));
+    cardCount.innerText = cardId;
 
     input.value = null;
     input.focus();
