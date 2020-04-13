@@ -1,6 +1,7 @@
 package kr.codesquad.todo9.api;
 
 import kr.codesquad.todo9.domain.*;
+import kr.codesquad.todo9.error.exception.BoardNotFoundException;
 import kr.codesquad.todo9.error.exception.UserNotFoundException;
 import kr.codesquad.todo9.repository.BoardRepository;
 import kr.codesquad.todo9.repository.UserRepository;
@@ -66,7 +67,7 @@ public class TodoAPIController {
 
     @GetMapping("/board/{boardId}/column/{boardKey}/card/list")
     public List<Card> showCardListOfColumnOfBoard(@PathVariable Long boardId, @PathVariable int boardKey) {
-        Column column = boardRepository.findById(boardId).orElseThrow(RuntimeException::new).getColumns().get(boardKey);
+        Column column = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).getColumns().get(boardKey);
         log.debug("column: {}", column);
 
         List<Card> cards = column.getCards();
@@ -86,7 +87,7 @@ public class TodoAPIController {
         User user = userRepository.findById(defaultUserId).orElseThrow(UserNotFoundException::new);
         log.debug("firstUser: {}", user);
 
-        Board board = boardRepository.findById(boardId).orElseThrow(RuntimeException::new);
+        Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
         log.debug("board: {}", board);
 
         board.addCard(boardKey, contents, user);
@@ -108,7 +109,7 @@ public class TodoAPIController {
 
     @GetMapping("/board/{boardId}/column/list")
     public List<Column> showColumnList(@PathVariable Long boardId) {
-        List<Column> columns = boardRepository.findById(boardId).orElseThrow(RuntimeException::new).getColumns();
+        List<Column> columns = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).getColumns();
         for (Column column : columns) {
             Collections.sort(column.getCards());
         }
@@ -122,7 +123,7 @@ public class TodoAPIController {
 
     @GetMapping("/board/{boardId}/log/list")
     public List<Log> showLogList(@PathVariable Long boardId) {
-        List<Log> logs = boardRepository.findById(boardId).orElseThrow(RuntimeException::new).getLogs();
+        List<Log> logs = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).getLogs();
         Collections.reverse(logs);
         return logs;
     }
@@ -134,7 +135,7 @@ public class TodoAPIController {
 
     @GetMapping("/board/{boardId}")
     public Board showBoard(@PathVariable Long boardId) {
-        Board board = boardRepository.findById(boardId).orElseThrow(RuntimeException::new);
+        Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
         List<Column> columns = board.getColumns();
         for (Column column : columns) {
             Collections.sort(column.getCards());
@@ -150,7 +151,7 @@ public class TodoAPIController {
 
     @GetMapping("/board/{boardId}/log/{boardKey}")
     public Log showLog(@PathVariable Long boardId, @PathVariable int boardKey) {
-        List<Log> logs = boardRepository.findById(boardId).orElseThrow(RuntimeException::new).getLogs();
+        List<Log> logs = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).getLogs();
         if (logs.size() < boardKey) {
             throw new RuntimeException("해당하는 로그를 찾지 못했습니다.");
         }
@@ -170,7 +171,7 @@ public class TodoAPIController {
         User user = userRepository.findById(defaultUserId).orElseThrow(UserNotFoundException::new);
         log.debug("firstUser: {}", user);
 
-        Board board = boardRepository.findById(boardId).orElseThrow(RuntimeException::new);
+        Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
         log.debug("board: {}", board);
 
         board.updateCard(boardKey, columnKey, contents, user);
