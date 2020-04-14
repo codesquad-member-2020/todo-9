@@ -24,7 +24,9 @@ class MoveCard {
     this.startColumn = this.draggingCard.closest(".project-columns");
   }
 
-  dragOverEventHandler(evt: Event) {}
+  dragOverEventHandler(evt: Event) {
+    evt.preventDefault();
+  }
 
   dragEnterEventHandler({ toElement }: Event) {}
 
