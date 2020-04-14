@@ -37,18 +37,18 @@ const getCardInput = (): string => {
   `;
 };
 
-const getCardContents = (id: string, cards: Array<Object>): string => {
+const getCardContents = (cards: Array<Object>): string => {
   if (!cards) return "";
   const cardContent: string = cards
-    .map((card: any): string => cardTemplate(id, card.id, card.contents))
+    .map((card: any): string => cardTemplate(card.id, card.columnKey, card.contents))
     .join("\n");
 
   return cardContent;
 };
 
-const cardTemplate = (id: string, cardId: string, content: string): string => {
+const cardTemplate = (cardId: string, cardKey: string, content: string): string => {
   return `
-      <div class="card" draggable="true" data-column-id="${id}" data-card-id="${cardId}">
+      <div class="card" draggable="true" data-card-id="${cardId}" data-card-key="${cardKey}">
         <div class="card-icon">
           <span class="material-icons">description</span>
         </div>
