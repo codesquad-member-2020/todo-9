@@ -13,6 +13,10 @@ import {
 } from "./columnTemplate";
 import { qs$, addClass, removeClass } from "./lib/util";
 import { DELETE_MESSAGE } from "./common/confirmMessage";
+import fetchRequest from "./common/fetchRequest";
+import { configs, SERVICE_URL, INIT_DATA_URI, EDIT_DATA_URI, DELETE_DATA_URI} from "./common/configs";
+import { METHOD } from "./common/constants";
+import TodoDataModel from './tododatamodel';
 
 class Column implements IView {
   private activity: Activity;
@@ -20,6 +24,7 @@ class Column implements IView {
   private editColumn: EditColumn;
   private placeHolderVisible: boolean;
   private inputValue: string;
+  private todoDataModel: TodoDataModel = TodoDataModel.getInstance();
 
   constructor(activity: Activity, editNote: EditNote, editColumn: EditColumn) {
     this.activity = activity;
@@ -74,14 +79,35 @@ class Column implements IView {
     return result;
   }
 
+  requestDeleteCard(card: HTMLElement) {
+    const ids = (<string>card.id).split('-');
+    const boardId = parseInt(ids[0].substr(1));
+    const columnId = parseInt(ids[1]);
+
+    let requestURI: string = <string>(SERVICE_URL + DELETE_DATA_URI);
+    const cvtURI = requestURI
+                    .replace("{boardKey}", this.todoDataModel.getColumnBoardKey(boardId))
+                    .replace("{columnKey}", this.todoDataModel.getCardColumnKey(boardId, columnId));
+
+    fetchRequest(cvtURI, METHOD.DELETE)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+    })
+  }
+
   cardDeleteClickEventHandler(evt: Event) {
     const result = this.showConfirm(DELETE_MESSAGE);
 
     if (result) {
       const target = <HTMLInputElement>evt.target;
-      const card: any = target.closest(".card-content-wrap");
+      const cardWrap: any = target.closest(".card-content-wrap");
       const column: any = target.closest(".card-list-wrap");
-      column.removeChild(card);
+      column.removeChild(cardWrap);
+
+      const card = <HTMLElement>target.closest(".card");
+
+      this.requestDeleteCard(card);
     }
   }
 
