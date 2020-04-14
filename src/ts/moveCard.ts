@@ -18,7 +18,11 @@ class MoveCard {
     return rectA.top + rectA.height / 2 < rectB.top + rectB.height / 2;
   }
 
-  dragStartEventHandler({ target }: Event) {}
+  dragStartEventHandler({ target }: Event) {
+    this.draggingCard = <HTMLElement>target;
+    this.draggingCard.style.opacity = "0.5";
+    this.startColumn = this.draggingCard.closest(".project-columns");
+  }
 
   dragOverEventHandler(evt: Event) {}
 
