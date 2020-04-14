@@ -42,7 +42,10 @@ class MoveCard {
     }
   }
 
-  dragEndEventHandler({ target }: Event) {}
+  dragEndEventHandler({ target }: Event) {
+    this.draggingCard!.style.opacity = "";
+    this.draggingCard!.classList.remove("placeholder");
+  }
 }
 
 export { MoveCard };
