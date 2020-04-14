@@ -114,6 +114,7 @@ public class TodoAPIController {
 
     @PostMapping("/column/{boardKey}/card")
     @Transactional
+
     public Log addCard(@PathVariable int boardKey, @RequestBody ContentsObject contentsObject) {
         return addCard(defaultBoardId, boardKey, contentsObject);
     }
