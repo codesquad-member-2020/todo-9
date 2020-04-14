@@ -11,12 +11,19 @@ import {
   getCardContents,
   cardTemplate,
 } from "./columnTemplate";
-import { qs$, addClass, removeClass } from "./lib/util";
+import { qs$, qsAll$, addClass, removeClass } from "./lib/util";
 import { DELETE_MESSAGE } from "./common/confirmMessage";
 import fetchRequest from "./common/fetchRequest";
-import { configs, SERVICE_URL, INIT_DATA_URI, EDIT_DATA_URI, DELETE_DATA_URI} from "./common/configs";
+import {
+  configs,
+  SERVICE_URL,
+  INIT_DATA_URI,
+  EDIT_DATA_URI,
+  DELETE_DATA_URI,
+} from "./common/configs";
 import { METHOD } from "./common/constants";
-import TodoDataModel from './tododatamodel';
+import TodoDataModel from "./tododatamodel";
+import { mouseDownHandler } from "./drag";
 
 class Column implements IView {
   private activity: Activity;
@@ -25,6 +32,7 @@ class Column implements IView {
   private placeHolderVisible: boolean;
   private inputValue: string;
   private todoDataModel: TodoDataModel = TodoDataModel.getInstance();
+  private dragged: Node | null;
 
   constructor(activity: Activity, editNote: EditNote, editColumn: EditColumn) {
     this.activity = activity;
@@ -32,6 +40,7 @@ class Column implements IView {
     this.editColumn = editColumn;
     this.placeHolderVisible = false;
     this.inputValue = "";
+    this.dragged = null;
   }
 
   render(): string {
@@ -51,18 +60,28 @@ class Column implements IView {
       }
     });
 
-    document.body.addEventListener("click", (evt: Event) => {
-      const className = (<HTMLInputElement>evt.target).className;
-
-      if (className === "close card-close") {
-        this.cardDeleteClickEventHandler(evt);
+    qs$(".column-wrap").addEventListener("mousedown", (evt: Event) => {
+      if (evt.target!.className === "card") {
+        mouseDownHandler(evt);
       }
     });
+
+    document.body.addEventListener(
+      "click",
+      (evt: Event) => {
+        const className = (<HTMLInputElement>evt.target).className;
+
+        if (className === "close card-close") {
+          this.cardDeleteClickEventHandler(evt);
+        }
+      },
+      false
+    );
 
     document.body.addEventListener("dblclick", (evt: Event) => {
       const className = (<HTMLInputElement>evt.target).className;
 
-      if (className === "content-wrap") {
+      if (className === "card") {
         const contentWrap = <HTMLInputElement>evt.target;
         const cardElement: any = contentWrap.closest(".card");
         this.cardDoubleClickEventHandler(cardElement);
@@ -80,20 +99,20 @@ class Column implements IView {
   }
 
   requestDeleteCard(card: HTMLElement) {
-    const ids = (<string>card.id).split('-');
+    const ids = (<string>card.id).split("-");
     const boardId = parseInt(ids[0].substr(1));
     const columnId = parseInt(ids[1]);
 
     let requestURI: string = <string>(SERVICE_URL + DELETE_DATA_URI);
     const cvtURI = requestURI
-                    .replace("{boardKey}", this.todoDataModel.getColumnBoardKey(boardId))
-                    .replace("{columnKey}", this.todoDataModel.getCardColumnKey(boardId, columnId));
+      .replace("{boardKey}", this.todoDataModel.getColumnBoardKey(boardId))
+      .replace("{columnKey}", this.todoDataModel.getCardColumnKey(boardId, columnId));
 
     fetchRequest(cvtURI, METHOD.DELETE)
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      });
   }
 
   cardDeleteClickEventHandler(evt: Event) {
@@ -101,7 +120,7 @@ class Column implements IView {
 
     if (result) {
       const target = <HTMLInputElement>evt.target;
-      const cardWrap: any = target.closest(".card-content-wrap");
+      const cardWrap: any = target.closest(".card");
       const column: any = target.closest(".card-list-wrap");
       column.removeChild(cardWrap);
 
@@ -123,11 +142,11 @@ class Column implements IView {
   cardAddBtnClickEventHandler(clickColumn: any) {
     const cardList: any = clickColumn.querySelector(".card-list-wrap");
     const input: any = clickColumn.querySelector("#card-input");
-    const columnId: string = clickColumn.id.substring(1);
     const cardCount: any = clickColumn.querySelector(".card-count");
     const cardId: string = (parseInt(cardCount.innerText) + 1).toString();
+    const cardKey: string = "";
 
-    cardList?.insertAdjacentHTML("afterbegin", cardTemplate(columnId, cardId, this.inputValue));
+    cardList?.insertAdjacentHTML("afterbegin", cardTemplate(cardId, cardKey, this.inputValue));
     cardCount.innerText = cardId;
 
     input.value = null;
@@ -177,15 +196,15 @@ class Column implements IView {
     let columnTemplate: string = "";
 
     columns.forEach((element: Element) => {
-      const { id, name, cards }: any = element;
+      const { id, name, boardKey, cards }: any = element;
       columnTemplate += `
       <div class="project-columns">
-        <div class="column" id="c${id}">
+        <div class="column" data-column-id="${id}" data-column-key="${boardKey}">
           ${getColumnHeader(name, cards)}
           <div class="card-wrap">
             ${getCardInput()}
             <div class="card-list-wrap">
-              ${getCardContents(id, cards)}
+              ${getCardContents(cards)}
             </div>
           </div>
         </div>

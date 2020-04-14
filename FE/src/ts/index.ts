@@ -4,7 +4,7 @@ import Column from "./column";
 import EditNote from "./editnote";
 import EditColumn from "./editcolumn";
 import Activity from "./activity";
-import TodoDataModel from "./tododatamodel"
+import TodoDataModel from "./tododatamodel";
 
 import fetchRequest from "./common/fetchRequest";
 import { configs, SERVICE_URL, INIT_DATA_URI } from "./common/configs";
@@ -25,8 +25,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
     .then((response) => response.json())
     .then((data) => {
       todoDataModel.setInitialData(data);
-      column.receiveInitialData(data); 
+      column.receiveInitialData(data);
     })
     .then(() => column.registerEventListener());
- 
 });
