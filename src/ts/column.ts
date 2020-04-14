@@ -24,6 +24,7 @@ import {
 import { METHOD } from "./common/constants";
 import TodoDataModel from "./tododatamodel";
 import { MoveCard } from "./moveCard";
+import { mouseDownHandler } from "./drag";
 
 class Column extends MoveCard implements IView {
   private activity: Activity;
@@ -100,15 +101,11 @@ class Column extends MoveCard implements IView {
     return result;
   }
 
-  requestDeleteCard(card: HTMLElement) {
-    const ids = (<string>card.id).split("-");
-    const boardId = parseInt(ids[0].substr(1));
-    const columnId = parseInt(ids[1]);
-
+  requestDeleteCard(boardKey: string, columnKey: string) {
     let requestURI: string = <string>(SERVICE_URL + DELETE_DATA_URI);
     const cvtURI = requestURI
-      .replace("{boardKey}", this.todoDataModel.getColumnBoardKey(boardId))
-      .replace("{columnKey}", this.todoDataModel.getCardColumnKey(boardId, columnId));
+      .replace("{boardKey}", boardKey)
+      .replace("{columnKey}", columnKey);
 
     fetchRequest(cvtURI, METHOD.DELETE)
       .then((response) => response.json())
@@ -122,13 +119,15 @@ class Column extends MoveCard implements IView {
 
     if (result) {
       const target = <HTMLInputElement>evt.target;
-      const cardWrap: any = target.closest(".card");
-      const column: any = target.closest(".card-list-wrap");
-      column.removeChild(cardWrap);
+      const card: Element = <Element>target.closest(".card");
+      const cardWrap: Element = <Element>target.closest(".card-list-wrap");
+      const column: Element = <Element>target.closest(".column");
+      cardWrap.removeChild(card);
 
-      const card = <HTMLElement>target.closest(".card");
+      const columnKey = card.getAttribute("data-card-key");
+      const boardKey = column.getAttribute("data-column-key");
 
-      this.requestDeleteCard(card);
+      this.requestDeleteCard(boardKey!, columnKey!);
     }
   }
 
