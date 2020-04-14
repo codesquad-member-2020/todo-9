@@ -11,7 +11,12 @@ class MoveCard {
     this.destColumn = null;
   }
 
-  isAbove(nodeA: HTMLElement, nodeB: HTMLElement) {}
+  isAbove(nodeA: HTMLElement, nodeB: HTMLElement) {
+    const rectA = nodeA.getBoundingClientRect();
+    const rectB = nodeB.getBoundingClientRect();
+
+    return rectA.top + rectA.height / 2 < rectB.top + rectB.height / 2;
+  }
 
   dragStartEventHandler({ target }: Event) {}
 
