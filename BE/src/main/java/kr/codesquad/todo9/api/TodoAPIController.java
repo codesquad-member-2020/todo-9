@@ -6,7 +6,8 @@ import kr.codesquad.todo9.error.exception.LogNotFoundException;
 import kr.codesquad.todo9.error.exception.UserNotFoundException;
 import kr.codesquad.todo9.repository.BoardRepository;
 import kr.codesquad.todo9.repository.UserRepository;
-import kr.codesquad.todo9.responseobjects.Result;
+import kr.codesquad.todo9.requestobject.ContentsObject;
+import kr.codesquad.todo9.responseobject.Result;
 import kr.codesquad.todo9.utils.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,14 +89,18 @@ public class TodoAPIController {
         return showCardListOfColumnOfBoard(defaultBoardId, boardKey);
     }
 
-    @PostMapping("/board/{boardId}/column/{boardKey}/card/{contents}")
+    @PostMapping("/board/{boardId}/column/{boardKey}/card")
     @Transactional
-    public Log addCard(@PathVariable Long boardId, @PathVariable int boardKey, @PathVariable String contents) {
+    public Log addCard(@PathVariable Long boardId,
+                       @PathVariable int boardKey,
+                       @RequestBody ContentsObject contentsObject) {
         User user = userRepository.findById(defaultUserId).orElseThrow(UserNotFoundException::new);
         log.debug("firstUser: {}", user);
 
         Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
         log.debug("board: {}", board);
+
+        String contents = contentsObject.getContents();
 
         board.addCard(boardKey, contents, user);
         boardRepository.save(board);
@@ -107,10 +112,11 @@ public class TodoAPIController {
         return board.getLastLog();
     }
 
-    @PostMapping("/column/{boardKey}/card/{contents}")
+    @PostMapping("/column/{boardKey}/card")
     @Transactional
-    public Log addCard(@PathVariable int boardKey, @PathVariable String contents) {
-        return addCard(defaultBoardId, boardKey, contents);
+
+    public Log addCard(@PathVariable int boardKey, @RequestBody ContentsObject contentsObject) {
+        return addCard(defaultBoardId, boardKey, contentsObject);
     }
 
     @GetMapping("/board/{boardId}/column/list")

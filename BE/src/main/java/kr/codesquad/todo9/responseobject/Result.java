@@ -1,4 +1,4 @@
-package kr.codesquad.todo9.responseobjects;
+package kr.codesquad.todo9.responseobject;
 
 public class Result {
     private boolean result;

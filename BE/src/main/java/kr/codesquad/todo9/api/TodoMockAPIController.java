@@ -4,7 +4,7 @@ import kr.codesquad.todo9.domain.Board;
 import kr.codesquad.todo9.domain.Card;
 import kr.codesquad.todo9.domain.Column;
 import kr.codesquad.todo9.domain.User;
-import kr.codesquad.todo9.responseobjects.Result;
+import kr.codesquad.todo9.responseobject.Result;
 import kr.codesquad.todo9.utils.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
