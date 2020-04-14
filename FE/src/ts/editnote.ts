@@ -1,9 +1,14 @@
 import '../style/edit-note.css';
 import Activity from './activity'
 import Modal from './modal';
+import TodoDataModel from './tododatamodel';
+import fetchRequest from "./common/fetchRequest";
+import { configs, SERVICE_URL, INIT_DATA_URI, EDIT_DATA_URI } from "./common/configs";
+import { METHOD } from "./common/constants";
 
 class EditNote extends Modal {
   private activity: Activity;
+  private todoDataModel: TodoDataModel = TodoDataModel.getInstance();
 
   constructor(activity: Activity, className: string) {
     super(className);
@@ -62,9 +67,33 @@ class EditNote extends Modal {
     });
   }
 
+  requestEditCard(card: HTMLElement, body: any) {
+    const ids = (<string>card.id).split('-');
+    const boardKey = parseInt(ids[0].substr(1));
+    const columnKey = parseInt(ids[1]);
+
+    this.todoDataModel.getColumnBoardKey(parseInt(ids[0].substr(1)));
+
+    let requestURI: string = <string>(SERVICE_URL + EDIT_DATA_URI);
+    const cvtURI = requestURI
+                    .replace("{boardKey}", this.todoDataModel.getColumnBoardKey(boardKey))
+                    .replace("{columnKey}", this.todoDataModel.getCardColumnKey(boardKey, columnKey));
+
+    fetchRequest(cvtURI, METHOD.PUT, body)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+    })
+  }
+
   saveButtonHandler(evt: Event): void {
     const textElement = this.getTextElement();
     this.currentTargetElement.innerHTML = textElement.value;
+
+    const card: any = (<HTMLElement>this.currentTargetElement).closest(".card");
+    const body = {"contents": textElement.value};
+
+    this.requestEditCard(card, body);
 
     this.hideModal();
   }

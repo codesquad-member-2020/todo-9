@@ -4,12 +4,14 @@ import Column from "./column";
 import EditNote from "./editnote";
 import EditColumn from "./editcolumn";
 import Activity from "./activity";
+import TodoDataModel from "./tododatamodel"
 
 import fetchRequest from "./common/fetchRequest";
 import { configs, SERVICE_URL, INIT_DATA_URI } from "./common/configs";
 import { METHOD } from "./common/constants";
 
 window.addEventListener("DOMContentLoaded", (event) => {
+  const todoDataModel = TodoDataModel.getInstance();
   const activity = new Activity();
   const editNote = new EditNote(activity, "edit-note-modal");
   const editColumn = new EditColumn(activity, "edit-column-modal");
@@ -21,6 +23,10 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
   fetchRequest(SERVICE_URL + INIT_DATA_URI, METHOD.GET)
     .then((response) => response.json())
-    .then((data) => column.receiveInitialData(data))
+    .then((data) => {
+      todoDataModel.setInitialData(data);
+      column.receiveInitialData(data); 
+    })
     .then(() => column.registerEventListener());
+ 
 });
