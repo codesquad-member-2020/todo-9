@@ -6,7 +6,7 @@ import kr.codesquad.todo9.error.exception.LogNotFoundException;
 import kr.codesquad.todo9.error.exception.UserNotFoundException;
 import kr.codesquad.todo9.repository.BoardRepository;
 import kr.codesquad.todo9.repository.UserRepository;
-import kr.codesquad.todo9.responseobjects.Result;
+import kr.codesquad.todo9.responseobject.Result;
 import kr.codesquad.todo9.utils.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
