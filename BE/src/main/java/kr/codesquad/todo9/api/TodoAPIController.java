@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -96,7 +97,7 @@ public class TodoAPIController {
     public Log addCard(HttpServletRequest request,
                        @PathVariable Long boardId,
                        @PathVariable int boardKey,
-                       @RequestBody ContentsObject contentsObject) {
+                       @RequestBody @Valid ContentsObject contentsObject) {
         User user = (User) request.getAttribute("user");
         log.debug("firstUser: {}", user);
 
@@ -118,7 +119,9 @@ public class TodoAPIController {
     @PostMapping("/column/{boardKey}/card")
     @Transactional
 
-    public Log addCard(HttpServletRequest request, @PathVariable int boardKey, @RequestBody ContentsObject contentsObject) {
+    public Log addCard(HttpServletRequest request,
+                       @PathVariable int boardKey,
+                       @RequestBody @Valid ContentsObject contentsObject) {
         return addCard(request, defaultBoardId, boardKey, contentsObject);
     }
 
@@ -197,7 +200,7 @@ public class TodoAPIController {
                         @PathVariable Long boardId,
                         @PathVariable int boardKey,
                         @PathVariable int columnKey,
-                        @RequestBody ContentsObject contentsObject) {
+                        @RequestBody @Valid ContentsObject contentsObject) {
         User user = (User) request.getAttribute("user");
         log.debug("firstUser: {}", user);
 
@@ -211,7 +214,10 @@ public class TodoAPIController {
     }
 
     @PutMapping("/column/{boardKey}/card/{columnKey}")
-    public Log editCard(HttpServletRequest request, @PathVariable int boardKey, @PathVariable int columnKey, @RequestBody ContentsObject contentsObject) {
+    public Log editCard(HttpServletRequest request,
+                        @PathVariable int boardKey,
+                        @PathVariable int columnKey,
+                        @RequestBody @Valid ContentsObject contentsObject) {
         return this.editCard(request, defaultBoardId, boardKey, columnKey, contentsObject);
     }
 
