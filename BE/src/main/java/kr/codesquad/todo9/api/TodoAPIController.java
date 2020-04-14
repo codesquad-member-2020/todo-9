@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -92,10 +93,11 @@ public class TodoAPIController {
 
     @PostMapping("/board/{boardId}/column/{boardKey}/card")
     @Transactional
-    public Log addCard(@PathVariable Long boardId,
+    public Log addCard(HttpServletRequest request,
+                       @PathVariable Long boardId,
                        @PathVariable int boardKey,
                        @RequestBody ContentsObject contentsObject) {
-        User user = userRepository.findById(defaultUserId).orElseThrow(UserNotFoundException::new);
+        User user = (User) request.getAttribute("user");
         log.debug("firstUser: {}", user);
 
         Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
@@ -116,8 +118,8 @@ public class TodoAPIController {
     @PostMapping("/column/{boardKey}/card")
     @Transactional
 
-    public Log addCard(@PathVariable int boardKey, @RequestBody ContentsObject contentsObject) {
-        return addCard(defaultBoardId, boardKey, contentsObject);
+    public Log addCard(HttpServletRequest request, @PathVariable int boardKey, @RequestBody ContentsObject contentsObject) {
+        return addCard(request, defaultBoardId, boardKey, contentsObject);
     }
 
     @GetMapping("/board/{boardId}/column/list")
@@ -191,11 +193,12 @@ public class TodoAPIController {
     }
 
     @PutMapping("/board/{boardId}/column/{boardKey}/card/{columnKey}")
-    public Log editCard(@PathVariable Long boardId,
+    public Log editCard(HttpServletRequest request,
+                        @PathVariable Long boardId,
                         @PathVariable int boardKey,
                         @PathVariable int columnKey,
                         @RequestBody ContentsObject contentsObject) {
-        User user = userRepository.findById(defaultUserId).orElseThrow(UserNotFoundException::new);
+        User user = (User) request.getAttribute("user");
         log.debug("firstUser: {}", user);
 
         Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
@@ -208,15 +211,16 @@ public class TodoAPIController {
     }
 
     @PutMapping("/column/{boardKey}/card/{columnKey}")
-    public Log editCard(@PathVariable int boardKey, @PathVariable int columnKey, @RequestBody ContentsObject contentsObject) {
-        return this.editCard(defaultBoardId, boardKey, columnKey, contentsObject);
+    public Log editCard(HttpServletRequest request, @PathVariable int boardKey, @PathVariable int columnKey, @RequestBody ContentsObject contentsObject) {
+        return this.editCard(request, defaultBoardId, boardKey, columnKey, contentsObject);
     }
 
     @DeleteMapping("/board/{boardId}/column/{boardKey}/card/{columnKey}")
-    public Log deleteCard(@PathVariable Long boardId,
+    public Log deleteCard(HttpServletRequest request,
+                          @PathVariable Long boardId,
                           @PathVariable int boardKey,
                           @PathVariable int columnKey) {
-        User user = userRepository.findById(defaultUserId).orElseThrow(UserNotFoundException::new);
+        User user = (User) request.getAttribute("user");
         log.debug("firstUser: {}", user);
 
         Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
@@ -229,16 +233,17 @@ public class TodoAPIController {
     }
 
     @DeleteMapping("/column/{boardKey}/card/{columnKey}")
-    public Log deleteCard(@PathVariable int boardKey, @PathVariable int columnKey) {
-        return deleteCard(defaultBoardId, boardKey, columnKey);
+    public Log deleteCard(HttpServletRequest request, @PathVariable int boardKey, @PathVariable int columnKey) {
+        return deleteCard(request, defaultBoardId, boardKey, columnKey);
     }
 
     @PatchMapping("/board/{boardId}/column/{boardKey}/card/{columnKey}")
-    public Log moveCard(@PathVariable Long boardId,
+    public Log moveCard(HttpServletRequest request,
+                        @PathVariable Long boardId,
                         @PathVariable int boardKey,
                         @PathVariable int columnKey,
                         @RequestBody MoveCardObject moveCardObject) {
-        User user = userRepository.findById(defaultUserId).orElseThrow(UserNotFoundException::new);
+        User user = (User) request.getAttribute("user");
         log.debug("firstUser: {}", user);
 
         Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
@@ -251,9 +256,10 @@ public class TodoAPIController {
     }
 
     @PatchMapping("/column/{boardKey}/card/{columnKey}")
-    public Log moveCard(@PathVariable int boardKey,
+    public Log moveCard(HttpServletRequest request,
+                        @PathVariable int boardKey,
                         @PathVariable int columnKey,
                         @RequestBody MoveCardObject moveCardObject) {
-        return moveCard(defaultBoardId, boardKey, columnKey, moveCardObject);
+        return moveCard(request, defaultBoardId, boardKey, columnKey, moveCardObject);
     }
 }
