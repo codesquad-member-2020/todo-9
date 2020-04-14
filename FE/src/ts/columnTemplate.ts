@@ -48,8 +48,7 @@ const getCardContents = (id: string, cards: Array<Object>): string => {
 
 const cardTemplate = (id: string, cardId: string, content: string): string => {
   return `
-    <div class="card-content-wrap">
-      <div class="card" id="c${id}-${cardId}">
+      <div class="card" draggable="true" data-column-id="${id}" data-card-id="${cardId}">
         <div class="card-icon">
           <span class="material-icons">description</span>
         </div>
@@ -59,7 +58,6 @@ const cardTemplate = (id: string, cardId: string, content: string): string => {
           <div class="card-author">Added by <span>choisohyun</span></div>
         </div>
       </div>
-    </div>
     `;
 };
 
