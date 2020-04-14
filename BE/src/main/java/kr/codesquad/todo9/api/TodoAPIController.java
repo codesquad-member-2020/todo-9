@@ -7,6 +7,7 @@ import kr.codesquad.todo9.error.exception.UserNotFoundException;
 import kr.codesquad.todo9.repository.BoardRepository;
 import kr.codesquad.todo9.repository.UserRepository;
 import kr.codesquad.todo9.requestobject.ContentsObject;
+import kr.codesquad.todo9.requestobject.MoveCardObject;
 import kr.codesquad.todo9.responseobject.Result;
 import kr.codesquad.todo9.utils.JwtUtils;
 import org.slf4j.Logger;
@@ -230,5 +231,29 @@ public class TodoAPIController {
     @DeleteMapping("/column/{boardKey}/card/{columnKey}")
     public Log deleteCard(@PathVariable int boardKey, @PathVariable int columnKey) {
         return deleteCard(defaultBoardId, boardKey, columnKey);
+    }
+
+    @PatchMapping("/board/{boardId}/column/{boardKey}/card/{columnKey}")
+    public Log moveCard(@PathVariable Long boardId,
+                        @PathVariable int boardKey,
+                        @PathVariable int columnKey,
+                        @RequestBody MoveCardObject moveCardObject) {
+        User user = userRepository.findById(defaultUserId).orElseThrow(UserNotFoundException::new);
+        log.debug("firstUser: {}", user);
+
+        Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
+        log.debug("board: {}", board);
+
+        board.moveCard(boardKey, columnKey, user, moveCardObject);
+        board = boardRepository.save(board);
+        log.debug("save after board: {}", board);
+        return board.getLastLog();
+    }
+
+    @PatchMapping("/column/{boardKey}/card/{columnKey}")
+    public Log moveCard(@PathVariable int boardKey,
+                        @PathVariable int columnKey,
+                        @RequestBody MoveCardObject moveCardObject) {
+        return moveCard(defaultBoardId, boardKey, columnKey, moveCardObject);
     }
 }

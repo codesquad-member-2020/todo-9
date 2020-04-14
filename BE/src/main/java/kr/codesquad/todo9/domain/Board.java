@@ -1,5 +1,6 @@
 package kr.codesquad.todo9.domain;
 
+import kr.codesquad.todo9.requestobject.MoveCardObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
@@ -35,6 +36,10 @@ public class Board {
         logs.add(createLog(action, type, user, contents, boardKey, columnKey));
     }
 
+    public void addLog(String action, String type, User user, String contents, Long cardId, Long fromColumnId, Long toColumnId) {
+        logs.add(createLog(action, type, contents, contents, cardId, cardId, fromColumnId, toColumnId, user));
+    }
+
     public void updateCard(int boardKey, int columnKey, String contents, User user) {
         Card card = this.columns.get(boardKey).getCards().get(columnKey);
         this.addLog("edit", "card", user, contents, boardKey, columnKey);
@@ -50,6 +55,18 @@ public class Board {
         card.setArchived(true);
         card.setUpdatedAt(now);
         card.setArchivedAt(now);
+        card.setUpdatedUserId(user.getId());
+    }
+
+    public void moveCard(int boardKey, int columnKey, User user, MoveCardObject moveCardObject) {
+        Column fromColumn = this.columns.get(boardKey);
+        Column toColumn = this.columns.get(moveCardObject.getAfterBoardKey());
+        Card card = fromColumn.getCards().get(columnKey);
+
+        this.addLog("move", "card", user, card.getContents(), card.getId(), fromColumn.getId(), toColumn.getId());
+        fromColumn.getCards().remove(card);
+        toColumn.getCards().add(moveCardObject.getAfterColumnKey(), card);
+        card.setUpdatedAt(LocalDateTime.now());
         card.setUpdatedUserId(user.getId());
     }
 
