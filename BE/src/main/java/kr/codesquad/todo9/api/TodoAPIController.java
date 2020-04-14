@@ -193,22 +193,22 @@ public class TodoAPIController {
     public Log editCard(@PathVariable Long boardId,
                         @PathVariable int boardKey,
                         @PathVariable int columnKey,
-                        @RequestBody String contents) {
+                        @RequestBody ContentsObject contentsObject) {
         User user = userRepository.findById(defaultUserId).orElseThrow(UserNotFoundException::new);
         log.debug("firstUser: {}", user);
 
         Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
         log.debug("board: {}", board);
 
-        board.updateCard(boardKey, columnKey, contents, user);
+        board.updateCard(boardKey, columnKey, contentsObject.getContents(), user);
         board = boardRepository.save(board);
         log.debug("save after board: {}", board);
         return board.getLastLog();
     }
 
     @PutMapping("/column/{boardKey}/card/{columnKey}")
-    public Log editCard(@PathVariable int boardKey, @PathVariable int columnKey, @RequestBody String contents) {
-        return this.editCard(defaultBoardId, boardKey, columnKey, contents);
+    public Log editCard(@PathVariable int boardKey, @PathVariable int columnKey, @RequestBody ContentsObject contentsObject) {
+        return this.editCard(defaultBoardId, boardKey, columnKey, contentsObject);
     }
 
     @DeleteMapping("/board/{boardId}/column/{boardKey}/card/{columnKey}")
