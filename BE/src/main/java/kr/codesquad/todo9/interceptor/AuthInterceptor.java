@@ -23,7 +23,8 @@ public class AuthInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler) throws Exception {
-        List<HttpCookie> cookies = HttpCookie.parse(request.getHeader("Cookie"));
+        String cookieHeader = Optional.ofNullable(request.getHeader("Cookie")).orElseThrow(LoginRequiredException::new);
+        List<HttpCookie> cookies = HttpCookie.parse(cookieHeader);
         Optional<HttpCookie> jwsCookie = Optional.empty();
         for (HttpCookie cookie : cookies) {
             if (cookie.getName().equals("jws")) {
