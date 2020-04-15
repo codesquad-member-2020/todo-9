@@ -13,7 +13,6 @@ import java.util.Map;
 
 public class JwtUtils {
 
-
     private JwtUtils() {}
 
     private static final String DATA = "data";
