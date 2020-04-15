@@ -24,6 +24,24 @@ class Login {
     </div>  
     `;
   }
+
+  async registerEventListener() {
+    await qs$(".login-btn").addEventListener("click", this.requestLogin);
+  }
+
+  requestLogin = () => {
+    fetchRequest(SERVICE_URL + LOGIN_URI, METHOD.POST)
+      .then((response) => response.json())
+      .then((resData) => this.handleResponse(resData))
+
+      .catch((error) => console.error(error));
+  };
+
+  handleResponse(resData: any) {
+    if (!resData.result) alert(resData.message);
+    this.isSuccess = resData.result;
+    return this.isSuccess;
+  }
 }
 
 export default Login;
