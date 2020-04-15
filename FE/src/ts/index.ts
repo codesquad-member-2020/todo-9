@@ -4,12 +4,21 @@ import Column from "./column";
 import EditNote from "./editnote";
 import EditColumn from "./editcolumn";
 import Activity from "./activity";
+import Login from "./login";
 
 import fetchRequest from "./common/fetchRequest";
-import { configs, SERVICE_URL, INIT_DATA_URI } from "./common/configs";
+import { SERVICE_URL, INIT_DATA_URI } from "./common/configs";
 import { METHOD } from "./common/constants";
 
-window.addEventListener("DOMContentLoaded", (event) => {
+(async () => {
+  const login = new Login();
+  document.body.innerHTML = login.render();
+
+  await login.registerEventListener();
+  // login.getIsSuccess()
+})();
+
+const main = () => {
   const activity = new Activity();
   const editNote = new EditNote(activity, "edit-note-modal");
   const editColumn = new EditColumn(activity, "edit-column-modal");
@@ -25,4 +34,4 @@ window.addEventListener("DOMContentLoaded", (event) => {
       column.receiveInitialData(data);
     })
     .then(() => column.registerEventListener());
-});
+};
