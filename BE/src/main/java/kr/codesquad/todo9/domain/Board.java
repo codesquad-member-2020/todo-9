@@ -75,7 +75,7 @@ public class Board {
         return this.logs.get(this.logs.size() - 1);
     }
 
-    public void sortBoard() {
+    public Board sortBoard() {
         for (Column column : this.columns) {
             List<Card> cards = new ArrayList<>();
             for (Card card : column.getCards()) {
@@ -87,6 +87,7 @@ public class Board {
             column.setCards(cards);
         }
         Collections.reverse(this.getLogs());
+        return this;
     }
 
     private Log createLog(String action, String type, User user, String contents, int boardKey) {
