@@ -2,10 +2,11 @@ package kr.codesquad.todo9.api;
 
 import kr.codesquad.todo9.domain.Board;
 import kr.codesquad.todo9.domain.Card;
-import kr.codesquad.todo9.domain.Log;
 import kr.codesquad.todo9.domain.User;
+import kr.codesquad.todo9.dto.LogDTO;
 import kr.codesquad.todo9.error.exception.BoardNotFoundException;
 import kr.codesquad.todo9.repository.BoardRepository;
+import kr.codesquad.todo9.repository.LogRepository;
 import kr.codesquad.todo9.requestobject.ContentsObject;
 import kr.codesquad.todo9.requestobject.MoveCardObject;
 import org.slf4j.Logger;
@@ -24,9 +25,11 @@ public class CardAPIController {
     private static final Long DEFAULT_BOARD_ID = 1L;
 
     private final BoardRepository boardRepository;
+    private final LogRepository logRepository;
 
-    public CardAPIController(BoardRepository boardRepository) {
+    public CardAPIController(BoardRepository boardRepository, LogRepository logRepository) {
         this.boardRepository = boardRepository;
+        this.logRepository = logRepository;
     }
 
     @GetMapping("/board/{boardId}/column/{boardKey}/card/list")
@@ -43,10 +46,10 @@ public class CardAPIController {
 
     @PostMapping("/board/{boardId}/column/{boardKey}/card")
     @Transactional
-    public Log addCard(HttpServletRequest request,
-                       @PathVariable Long boardId,
-                       @PathVariable int boardKey,
-                       @RequestBody @Valid ContentsObject contentsObject) {
+    public LogDTO addCard(HttpServletRequest request,
+                          @PathVariable Long boardId,
+                          @PathVariable int boardKey,
+                          @RequestBody @Valid ContentsObject contentsObject) {
         User user = (User) request.getAttribute("user");
         log.debug("firstUser: {}", user);
 
@@ -62,24 +65,23 @@ public class CardAPIController {
         board.addLog("create", "card", user, contents, boardKey);
         board = boardRepository.save(board);
         log.debug("save log after board: {}", board);
-        return board.getLastLog();
+        return logRepository.getLogDTO(board.getId(), board.getLastLog().getId());
     }
 
     @PostMapping("/column/{boardKey}/card")
     @Transactional
-    public Log addCard(HttpServletRequest request,
-                       @PathVariable int boardKey,
-                       @RequestBody @Valid ContentsObject contentsObject) {
+    public LogDTO addCard(HttpServletRequest request,
+                         @PathVariable int boardKey,
+                         @RequestBody @Valid ContentsObject contentsObject) {
         return addCard(request, DEFAULT_BOARD_ID, boardKey, contentsObject);
     }
 
     @PutMapping("/board/{boardId}/column/{boardKey}/card/{columnKey}")
-    public Log editCard(HttpServletRequest request,
-                        @PathVariable Long boardId,
-                        @PathVariable int boardKey,
-                        @PathVariable int columnKey,
-                        @RequestBody
-                        @Valid ContentsObject contentsObject) {
+    public LogDTO editCard(HttpServletRequest request,
+                          @PathVariable Long boardId,
+                          @PathVariable int boardKey,
+                          @PathVariable int columnKey,
+                          @RequestBody @Valid ContentsObject contentsObject) {
         User user = (User) request.getAttribute("user");
         log.debug("firstUser: {}", user);
 
@@ -89,22 +91,22 @@ public class CardAPIController {
         board.updateCard(boardKey, columnKey, contentsObject.getContents(), user);
         board = boardRepository.save(board);
         log.debug("save after board: {}", board);
-        return board.getLastLog();
+        return logRepository.getLogDTO(board.getId(), board.getLastLog().getId());
     }
 
     @PutMapping("/column/{boardKey}/card/{columnKey}")
-    public Log editCard(HttpServletRequest request,
-                        @PathVariable int boardKey,
-                        @PathVariable int columnKey,
-                        @RequestBody @Valid ContentsObject contentsObject) {
+    public LogDTO editCard(HttpServletRequest request,
+                          @PathVariable int boardKey,
+                          @PathVariable int columnKey,
+                          @RequestBody @Valid ContentsObject contentsObject) {
         return this.editCard(request, DEFAULT_BOARD_ID, boardKey, columnKey, contentsObject);
     }
 
     @DeleteMapping("/board/{boardId}/column/{boardKey}/card/{columnKey}")
-    public Log deleteCard(HttpServletRequest request,
-                          @PathVariable Long boardId,
-                          @PathVariable int boardKey,
-                          @PathVariable int columnKey) {
+    public LogDTO deleteCard(HttpServletRequest request,
+                            @PathVariable Long boardId,
+                            @PathVariable int boardKey,
+                            @PathVariable int columnKey) {
         User user = (User) request.getAttribute("user");
         log.debug("firstUser: {}", user);
 
@@ -114,21 +116,20 @@ public class CardAPIController {
         board.deleteCard(boardKey, columnKey, user);
         board = boardRepository.save(board);
         log.debug("save after board: {}", board);
-        return board.getLastLog();
+        return logRepository.getLogDTO(board.getId(), board.getLastLog().getId());
     }
 
     @DeleteMapping("/column/{boardKey}/card/{columnKey}")
-    public Log deleteCard(HttpServletRequest request, @PathVariable int boardKey, @PathVariable int columnKey) {
+    public LogDTO deleteCard(HttpServletRequest request, @PathVariable int boardKey, @PathVariable int columnKey) {
         return deleteCard(request, DEFAULT_BOARD_ID, boardKey, columnKey);
     }
 
     @PatchMapping("/board/{boardId}/column/{boardKey}/card/{columnKey}")
-    public Log moveCard(HttpServletRequest request,
-                        @PathVariable Long boardId,
-                        @PathVariable int boardKey,
-                        @PathVariable int columnKey,
-                        @RequestBody
-                                MoveCardObject moveCardObject) {
+    public LogDTO moveCard(HttpServletRequest request,
+                          @PathVariable Long boardId,
+                          @PathVariable int boardKey,
+                          @PathVariable int columnKey,
+                          @RequestBody MoveCardObject moveCardObject) {
         User user = (User) request.getAttribute("user");
         log.debug("firstUser: {}", user);
 
@@ -138,14 +139,14 @@ public class CardAPIController {
         board.moveCard(boardKey, columnKey, user, moveCardObject);
         board = boardRepository.save(board);
         log.debug("save after board: {}", board);
-        return board.getLastLog();
+        return logRepository.getLogDTO(board.getId(), board.getLastLog().getId());
     }
 
     @PatchMapping("/column/{boardKey}/card/{columnKey}")
-    public Log moveCard(HttpServletRequest request,
-                        @PathVariable int boardKey,
-                        @PathVariable int columnKey,
-                        @RequestBody MoveCardObject moveCardObject) {
+    public LogDTO moveCard(HttpServletRequest request,
+                           @PathVariable int boardKey,
+                           @PathVariable int columnKey,
+                           @RequestBody MoveCardObject moveCardObject) {
         return moveCard(request, DEFAULT_BOARD_ID, boardKey, columnKey, moveCardObject);
     }
 }
