@@ -127,18 +127,9 @@ public class TodoAPIController {
 
     @GetMapping("/board/{boardId}/column/list")
     public List<Column> showColumnList(@PathVariable Long boardId) {
-        List<Column> columns = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).getColumns();
-        for (Column column : columns) {
-            List<Card> cards = new ArrayList<>();
-            for (Card card : column.getCards()) {
-                if (!card.getArchived()) {
-                    cards.add(card);
-                }
-            }
-            Collections.sort(cards);
-            column.setCards(cards);
-        }
-        return columns;
+        Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
+        board.sortBoard();
+        return board.getColumns();
     }
 
     @GetMapping("/column/list")
@@ -161,18 +152,7 @@ public class TodoAPIController {
     @GetMapping("/board/{boardId}")
     public Board showBoard(@PathVariable Long boardId) {
         Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
-        List<Column> columns = board.getColumns();
-        for (Column column : columns) {
-            List<Card> cards = new ArrayList<>();
-            for (Card card : column.getCards()) {
-                if (!card.getArchived()) {
-                    cards.add(card);
-                }
-            }
-            Collections.sort(cards);
-            column.setCards(cards);
-        }
-        Collections.reverse(board.getLogs());
+        board.sortBoard();
         return board;
     }
 

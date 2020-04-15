@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Board {
@@ -72,6 +73,20 @@ public class Board {
 
     public Log getLastLog() {
         return this.logs.get(this.logs.size() - 1);
+    }
+
+    public void sortBoard() {
+        for (Column column : this.columns) {
+            List<Card> cards = new ArrayList<>();
+            for (Card card : column.getCards()) {
+                if (!card.getArchived()) {
+                    cards.add(card);
+                }
+            }
+            Collections.sort(cards);
+            column.setCards(cards);
+        }
+        Collections.reverse(this.getLogs());
     }
 
     private Log createLog(String action, String type, User user, String contents, int boardKey) {
