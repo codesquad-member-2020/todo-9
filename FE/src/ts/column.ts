@@ -22,9 +22,7 @@ import {
   DELETE_DATA_URI,
 } from "./common/configs";
 import { METHOD } from "./common/constants";
-import TodoDataModel from "./tododatamodel";
 import { MoveCard } from "./moveCard";
-import { mouseDownHandler } from "./drag";
 
 class Column extends MoveCard implements IView {
   private activity: Activity;
@@ -32,7 +30,6 @@ class Column extends MoveCard implements IView {
   private editColumn: EditColumn;
   private placeHolderVisible: boolean;
   private inputValue: string;
-  private todoDataModel: TodoDataModel = TodoDataModel.getInstance();
 
   constructor(activity: Activity, editNote: EditNote, editColumn: EditColumn) {
     super();
@@ -103,9 +100,7 @@ class Column extends MoveCard implements IView {
 
   requestDeleteCard(boardKey: string, columnKey: string) {
     let requestURI: string = <string>(SERVICE_URL + DELETE_DATA_URI);
-    const cvtURI = requestURI
-      .replace("{boardKey}", boardKey)
-      .replace("{columnKey}", columnKey);
+    const cvtURI = requestURI.replace("{boardKey}", boardKey).replace("{columnKey}", columnKey);
 
     fetchRequest(cvtURI, METHOD.DELETE)
       .then((response) => response.json())
