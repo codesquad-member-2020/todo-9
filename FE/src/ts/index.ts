@@ -24,14 +24,16 @@ const main = () => {
   const editColumn = new EditColumn(activity, "edit-column-modal");
   const column = new Column(activity, editNote, editColumn);
 
-  document.body.innerHTML = column.render() + editNote.render() + editColumn.render();
+  document.body.innerHTML = column.render() + editNote.render() + editColumn.render() + activity.render();
 
   editNote.registerEventListener();
+  activity.registerEventListener();
 
   fetchRequest(SERVICE_URL + INIT_DATA_URI, METHOD.GET)
     .then((response) => response.json())
     .then((data) => {
       column.receiveInitialData(data);
+      activity.receiveInitialData(data);
     })
     .then(() => column.registerEventListener());
 };
