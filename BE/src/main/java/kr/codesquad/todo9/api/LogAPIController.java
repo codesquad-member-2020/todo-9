@@ -1,9 +1,8 @@
 package kr.codesquad.todo9.api;
 
-import kr.codesquad.todo9.domain.Log;
-import kr.codesquad.todo9.error.exception.BoardNotFoundException;
+import kr.codesquad.todo9.dto.LogDTO;
 import kr.codesquad.todo9.error.exception.LogNotFoundException;
-import kr.codesquad.todo9.repository.BoardRepository;
+import kr.codesquad.todo9.repository.LogRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,15 +17,15 @@ public class LogAPIController {
     private static final Logger log = LoggerFactory.getLogger(LogAPIController.class);
     private static final Long defaultBoardId = 1L;
 
-    private final BoardRepository boardRepository;
+    private final LogRepository logRepository;
 
-    public LogAPIController(BoardRepository boardRepository) {
-        this.boardRepository = boardRepository;
+    public LogAPIController(LogRepository logRepository) {
+        this.logRepository = logRepository;
     }
 
     @GetMapping("/board/{boardId}/log/{boardKey}")
-    public Log showLog(@PathVariable Long boardId, @PathVariable int boardKey) {
-        List<Log> logs = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).getLogs();
+    public LogDTO showLog(@PathVariable Long boardId, @PathVariable int boardKey) {
+        List<LogDTO> logs = logRepository.getLogDTOList(boardId);
         if (logs.size() < boardKey) {
             throw new LogNotFoundException();
         }
@@ -34,19 +33,19 @@ public class LogAPIController {
     }
 
     @GetMapping("/log/{boardKey}")
-    public Log showLog(@PathVariable int boardKey) {
+    public LogDTO showLog(@PathVariable int boardKey) {
         return showLog(defaultBoardId, boardKey);
     }
 
     @GetMapping("/board/{boardId}/log/list")
-    public List<Log> showLogList(@PathVariable Long boardId) {
-        List<Log> logs = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).sortBoard().getLogs();
+    public List<LogDTO> showLogList(@PathVariable Long boardId) {
+        List<LogDTO> logs = logRepository.getLogDTOList(boardId);
         log.debug("logs: {}", logs);
         return logs;
     }
 
     @GetMapping("/log/list")
-    public List<Log> showLogList() {
+    public List<LogDTO> showLogList() {
         return showLogList(defaultBoardId);
     }
 }
