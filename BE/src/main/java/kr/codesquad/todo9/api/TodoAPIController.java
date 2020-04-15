@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -31,18 +29,9 @@ public class TodoAPIController {
 
     @GetMapping("/board/{boardId}/column/{boardKey}/card/list")
     public List<Card> showCardListOfColumnOfBoard(@PathVariable Long boardId, @PathVariable int boardKey) {
-        Column column = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).getColumns().get(boardKey);
-        log.debug("column: {}", column);
-
-        List<Card> cards = new ArrayList<>();
-        for (Card card : column.getCards()) {
-            if (!card.getArchived()) {
-                cards.add(card);
-            }
-        }
-        Collections.sort(cards);
-        log.debug("cards: {}", cards);
-        return cards;
+        Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).sortBoard();
+        log.debug("board: {}", board);
+        return board.getColumns().get(boardKey).getCards();
     }
 
     @GetMapping("/column/{boardKey}/card/list")
@@ -76,7 +65,6 @@ public class TodoAPIController {
 
     @PostMapping("/column/{boardKey}/card")
     @Transactional
-
     public Log addCard(HttpServletRequest request,
                        @PathVariable int boardKey,
                        @RequestBody @Valid ContentsObject contentsObject) {
@@ -85,8 +73,8 @@ public class TodoAPIController {
 
     @GetMapping("/board/{boardId}/column/list")
     public List<Column> showColumnList(@PathVariable Long boardId) {
-        Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
-        board.sortBoard();
+        Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).sortBoard();
+        log.debug("board: {}", board);
         return board.getColumns();
     }
 
@@ -97,8 +85,8 @@ public class TodoAPIController {
 
     @GetMapping("/board/{boardId}/log/list")
     public List<Log> showLogList(@PathVariable Long boardId) {
-        List<Log> logs = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).getLogs();
-        Collections.reverse(logs);
+        List<Log> logs = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).sortBoard().getLogs();
+        log.debug("logs: {}", logs);
         return logs;
     }
 
@@ -109,8 +97,8 @@ public class TodoAPIController {
 
     @GetMapping("/board/{boardId}")
     public Board showBoard(@PathVariable Long boardId) {
-        Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
-        board.sortBoard();
+        Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).sortBoard();
+        log.debug("board: {}", board);
         return board;
     }
 
