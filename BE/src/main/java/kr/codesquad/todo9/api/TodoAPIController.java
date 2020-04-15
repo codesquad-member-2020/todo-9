@@ -2,7 +2,6 @@ package kr.codesquad.todo9.api;
 
 import kr.codesquad.todo9.domain.*;
 import kr.codesquad.todo9.error.exception.BoardNotFoundException;
-import kr.codesquad.todo9.error.exception.LogNotFoundException;
 import kr.codesquad.todo9.repository.BoardRepository;
 import kr.codesquad.todo9.requestobject.ContentsObject;
 import kr.codesquad.todo9.requestobject.MoveCardObject;
@@ -83,18 +82,6 @@ public class TodoAPIController {
         return showColumnList(defaultBoardId);
     }
 
-    @GetMapping("/board/{boardId}/log/list")
-    public List<Log> showLogList(@PathVariable Long boardId) {
-        List<Log> logs = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).sortBoard().getLogs();
-        log.debug("logs: {}", logs);
-        return logs;
-    }
-
-    @GetMapping("/log/list")
-    public List<Log> showLogList() {
-        return showLogList(defaultBoardId);
-    }
-
     @GetMapping("/board/{boardId}")
     public Board showBoard(@PathVariable Long boardId) {
         Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).sortBoard();
@@ -105,20 +92,6 @@ public class TodoAPIController {
     @GetMapping("/board")
     public Board showBoard() {
         return showBoard(defaultBoardId);
-    }
-
-    @GetMapping("/board/{boardId}/log/{boardKey}")
-    public Log showLog(@PathVariable Long boardId, @PathVariable int boardKey) {
-        List<Log> logs = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).getLogs();
-        if (logs.size() < boardKey) {
-            throw new LogNotFoundException();
-        }
-        return logs.get(boardKey - 1);
-    }
-
-    @GetMapping("/log/{boardKey}")
-    public Log showLog(@PathVariable int boardKey) {
-        return showLog(defaultBoardId, boardKey);
     }
 
     @PutMapping("/board/{boardId}/column/{boardKey}/card/{columnKey}")
