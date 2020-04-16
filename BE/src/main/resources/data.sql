@@ -1,6 +1,9 @@
 INSERT INTO `USER` (USERNAME, PROFILE_IMAGE_URL)
 VALUES ('dion', 'https://spring.io/images/favicon.ico');
 
+INSERT INTO `USER` (USERNAME, PROFILE_IMAGE_URL)
+VALUES ('honux', 'https://github.com/code-squad/homepage/blob/master/img/team/honux.jpg?raw=true');
+
 INSERT INTO BOARD (`NAME`, `CRT_USER_ID`, `UPD_USER_ID`)
 VALUES ('ToDo Board', 1, 1);
 
@@ -33,3 +36,9 @@ VALUES ('API 수정하기', 1, 1, 1, 1);
 
 INSERT INTO LOG (`ACTION`, `TYPE`, `BEFORE_CARD_CONTENTS`, `AFTER_CARD_CONTENTS`, `BEFORE_CARD_ID`, `AFTER_CARD_ID`, `FROM_COLUMN_ID`, `TO_COLUMN_ID`, USER_ID, BOARD)
 VALUES ('create', 'card', null, 'API 수정하기', null, 2, 1, 1, 1, 1);
+
+INSERT INTO CARD (CONTENTS, COLUMN_KEY, `COLUMN`, CRT_USER_ID, UPD_USER_ID)
+VALUES ('맥북 프로 사기', 0, 3, 2, 2);
+
+INSERT INTO LOG (`ACTION`, `TYPE`, `BEFORE_CARD_CONTENTS`, `AFTER_CARD_CONTENTS`, `BEFORE_CARD_ID`, `AFTER_CARD_ID`, `FROM_COLUMN_ID`, `TO_COLUMN_ID`, USER_ID, BOARD)
+VALUES ('create', 'card', null, '맥북 프로 사기', null, 3, 3, 3, 2, 1);
