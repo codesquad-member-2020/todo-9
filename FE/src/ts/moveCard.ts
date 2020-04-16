@@ -51,7 +51,15 @@ class MoveCard {
   dragEndEventHandler() {
     this.draggingCard!.style.opacity = "";
     this.draggingCard!.classList.remove("placeholder");
+    this.renderCardCount();
     this.saveMoveCardInfo();
+  }
+
+  renderCardCount() {
+    const startCount: HTMLElement | null = this.startColumn!.querySelector(".card-count");
+    const endCount: HTMLElement | null | undefined = this.destColumn?.querySelector(".card-count");
+    startCount!.innerText = (parseInt(startCount!.innerText) - 1).toString();
+    endCount!.innerText = (parseInt(endCount!.innerText) + 1).toString();
   }
 
   saveMoveCardInfo() {
