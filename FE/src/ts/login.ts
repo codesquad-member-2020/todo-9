@@ -1,17 +1,11 @@
 import "../style/login.css";
 import fetchRequest from "./common/fetchRequest";
-import { qs$ } from "./lib/util";
 import { SERVICE_URL, LOGIN_URI } from "./common/configs";
 import { METHOD } from "./common/constants";
+import main from "./index";
 
 class Login {
-  private isSuccess: boolean;
-
-  constructor() {
-    this.isSuccess = false;
-  }
-
-  render(): string {
+  render() {
     return `
     <div class="container">
       <div class="top"></div>
@@ -25,22 +19,22 @@ class Login {
     `;
   }
 
-  async registerEventListener() {
-    await qs$(".login-btn").addEventListener("click", this.requestLogin);
+  registerEventListener() {
+    document.addEventListener("click", ({ target }: Event) => {
+      if ((<HTMLElement>target).className === "login-btn") this.requestLogin();
+    });
   }
 
-  requestLogin = () => {
+  requestLogin() {
     fetchRequest(SERVICE_URL + LOGIN_URI, METHOD.POST)
       .then((response) => response.json())
-      .then((resData) => this.handleResponse(resData))
-
-      .catch((error) => console.error(error));
-  };
-
-  handleResponse(resData: any) {
-    if (!resData.result) alert(resData.message);
-    this.isSuccess = resData.result;
-    return this.isSuccess;
+      .then((resData) => {
+        if (!resData.result) alert(resData.message);
+        return resData.result;
+      })
+      .then((result) => {
+        if (result) main();
+      });
   }
 }
 

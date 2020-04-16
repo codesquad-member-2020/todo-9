@@ -106,7 +106,6 @@ body {
   cursor: pointer;
 }
 
-.login-btn:hover,
-.login-btn:focus {
+.login-btn:hover {
   background-color: #3745b5;
 }

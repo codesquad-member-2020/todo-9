@@ -14,13 +14,7 @@ import {
 import { qs$, qsAll$, addClass, removeClass } from "./lib/util";
 import { DELETE_MESSAGE } from "./common/confirmMessage";
 import fetchRequest from "./common/fetchRequest";
-import {
-  configs,
-  SERVICE_URL,
-  INIT_DATA_URI,
-  EDIT_DATA_URI,
-  DELETE_DATA_URI,
-} from "./common/configs";
+import { SERVICE_URL, INIT_DATA_URI, EDIT_DATA_URI, DELETE_DATA_URI } from "./common/configs";
 import { METHOD } from "./common/constants";
 import { MoveCard } from "./moveCard";
 
