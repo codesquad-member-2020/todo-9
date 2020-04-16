@@ -59,8 +59,8 @@ class Column extends MoveCard implements IView {
       }
     });
     document.addEventListener("dragover", (evt: Event) => this.dragOverEventHandler(evt));
-    document.addEventListener("dragenter", (evt: Event) => this.dragEnterEventHandler(evt));
-    document.addEventListener("dragend", (evt: Event) => this.dragEndEventHandler(evt));
+    document.addEventListener("dragenter", (evt: DragEvent) => this.dragEnterEventHandler(evt));
+    document.addEventListener("dragend", () => this.dragEndEventHandler());
 
     document.body.addEventListener(
       "click",
