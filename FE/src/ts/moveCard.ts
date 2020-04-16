@@ -62,6 +62,19 @@ class MoveCard {
       afterColumnKey: this.destCard?.dataset.cardKey,
       afterBoardKey: this.destColumn?.dataset.columnKey,
     };
+
+    this.requestMoveCard(boardKey!, columnKey!, body);
+  }
+
+  requestMoveCard(boardKey: string, columnKey: string, body: any) {
+    let requestURI: string = <string>(SERVICE_URL + MOVE_URI);
+    const cvtURI = requestURI.replace("{boardKey}", boardKey).replace("{columnKey}", columnKey);
+
+    fetchRequest(cvtURI, METHOD.PATCH, body)
+      .then((response) => response.json())
+      .then((data) => {
+        this.activity.appendActivity(data);
+      });
   }
 }
 
