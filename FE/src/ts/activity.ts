@@ -32,8 +32,12 @@ class Activity implements IView{
   }
 
   public receiveInitialData({ logs }: any) {
-    logs.forEach((log: any) => {
-      this.appendActivity(log);
+    const reversedLogs = Array.from(logs).reverse();
+
+    reversedLogs.forEach((log: any) => {
+      if (log.type === "card") {
+        this.appendActivity(log);
+      }
     });
   }
 
@@ -71,7 +75,7 @@ class Activity implements IView{
     const generalTemplate = this.getGeneralActivityTemplate();
     let description: string = '';
     const imageSrc: string = log.user.profileImageUrl;
-    const time: string = log.afterCard.updatedAt;
+    const time: string = log.actionedAt;
 
     switch (log.action) {
       case UserCardAction.CREATE: {
@@ -104,7 +108,7 @@ class Activity implements IView{
   private makeCreateTemplate(log: any): string {
     const description = this.getDescriptionTemplate(UserCardAction.CREATE)
                                 .replace("{userName}", log.user.username)
-                                .replace("{contents}", log.afterCard.contents)
+                                .replace("{contents}", log.afterCardContents)
                                 .replace("{columnName}", log.toColumn.name);
                             
     return description;

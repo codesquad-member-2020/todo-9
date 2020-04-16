@@ -14,7 +14,7 @@ import {
 import { qs$, qsAll$, addClass, removeClass } from "./lib/util";
 import { DELETE_MESSAGE } from "./common/confirmMessage";
 import fetchRequest from "./common/fetchRequest";
-import { SERVICE_URL, INIT_DATA_URI, EDIT_DATA_URI, DELETE_DATA_URI } from "./common/configs";
+import { SERVICE_URL, ADD_URI, DELETE_DATA_URI } from "./common/configs";
 import { METHOD } from "./common/constants";
 import { MoveCard } from "./moveCard";
 
@@ -49,6 +49,10 @@ class Column extends MoveCard implements IView {
       } else if ((<HTMLInputElement>target).className.includes("cancel-btn")) {
         this.plusBtnClickEventHandler(clickColumn);
       }
+    });
+
+    qs$(".menu").addEventListener("click", (evt: Event) =>{
+      this.menuBtnClickEventHandler(evt);
     });
 
     document.addEventListener("dragstart", (evt: Event) => {
@@ -99,11 +103,15 @@ class Column extends MoveCard implements IView {
     fetchRequest(cvtURI, METHOD.DELETE)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        this.activity.appendActivity(data);
       });
   }
 
-  cardDeleteClickEventHandler(evt: Event) {
+  private menuBtnClickEventHandler(evt: Event) {
+    this.activity.showActivity();
+  }
+
+  private cardDeleteClickEventHandler(evt: Event) {
     const result = this.showConfirm(DELETE_MESSAGE);
 
     if (result) {
@@ -120,7 +128,7 @@ class Column extends MoveCard implements IView {
     }
   }
 
-  cardDoubleClickEventHandler(card: HTMLInputElement) {
+  private cardDoubleClickEventHandler(card: HTMLInputElement) {
     const contentElement: any = card.querySelector(".card-content");
     const content = contentElement.innerHTML;
     const cardId = card.id;
@@ -133,17 +141,32 @@ class Column extends MoveCard implements IView {
     const cardList: any = clickColumn.querySelector(".card-list-wrap");
     const input: any = clickColumn.querySelector("#card-input");
     const cardCount: any = clickColumn.querySelector(".card-count");
-    const cardId: string = (parseInt(cardCount.innerText) + 1).toString();
-    const cardKey: string = "";
+    const boardKey = clickColumn.getAttribute("data-column-key");
+    
+    let requestURI: string = <string>(SERVICE_URL + ADD_URI);
+    const cvtURI = requestURI.replace("{boardKey}", boardKey);
+    const body: any = { contents: input.value };
 
-    cardList?.insertAdjacentHTML("afterbegin", cardTemplate(cardId, cardKey, this.inputValue));
-    cardCount.innerText = cardId;
+    fetchRequest(cvtURI, METHOD.POST, body)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        const cardId: string = data.afterCard.id;
+        const cardKey: string = data.afterCard.columnKey;
 
-    input.value = null;
-    input.focus();
+        console.log(cardId, cardKey);
 
-    this.inputValue = "";
-    clickColumn.querySelector(".add-btn").disabled = true;
+        cardList?.insertAdjacentHTML("afterbegin", cardTemplate(cardId, cardKey, this.inputValue));
+        cardCount.innerText = cardId;
+
+        input.value = null;
+        input.focus();
+
+        this.inputValue = "";
+        clickColumn.querySelector(".add-btn").disabled = true;
+
+        this.activity.appendActivity(data);
+      });
   }
 
   inputEventHandler({ target }: Event) {

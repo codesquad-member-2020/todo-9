@@ -98,8 +98,8 @@ public class Board {
                 contents,
                 null,
                 cards.get(cards.size() - 1).getId(),
-                (long) boardKey,
-                (long) boardKey,
+                (long) boardKey + 1,
+                (long) boardKey + 1,
                 user);
     }
 
@@ -111,8 +111,8 @@ public class Board {
                 contents,
                 card.getId(),
                 card.getId(),
-                (long) boardKey,
-                (long) boardKey,
+                (long) boardKey + 1,
+                (long) boardKey + 1,
                 user);
     }
 
