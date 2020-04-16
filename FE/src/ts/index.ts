@@ -10,14 +10,6 @@ import fetchRequest from "./common/fetchRequest";
 import { SERVICE_URL, INIT_DATA_URI } from "./common/configs";
 import { METHOD } from "./common/constants";
 
-(async () => {
-  const login = new Login();
-  document.body.innerHTML = login.render();
-
-  await login.registerEventListener();
-  // login.getIsSuccess()
-})();
-
 const main = () => {
   const activity = new Activity();
   const editNote = new EditNote(activity, "edit-note-modal");
@@ -37,3 +29,11 @@ const main = () => {
     })
     .then(() => column.registerEventListener());
 };
+
+(() => {
+  const login = new Login();
+  document.body.insertAdjacentHTML("afterbegin", login.render());
+  login.registerEventListener();
+})();
+
+export default main;
