@@ -40,13 +40,13 @@ const getCardInput = (): string => {
 const getCardContents = (cards: Array<Object>): string => {
   if (!cards) return "";
   const cardContent: string = cards
-    .map((card: any): string => cardTemplate(card.id, card.columnKey, card.contents))
+    .map((card: any): string => cardTemplate(card.id, card.columnKey, card.contents, card.createdUser.username))
     .join("\n");
 
   return cardContent;
 };
 
-const cardTemplate = (cardId: string, cardKey: string, content: string): string => {
+const cardTemplate = (cardId: string, cardKey: string, content: string, user: string): string => {
   return `
       <div class="card" draggable="true" data-card-id="${cardId}" data-card-key="${cardKey}">
         <div class="card-icon">
@@ -55,7 +55,7 @@ const cardTemplate = (cardId: string, cardKey: string, content: string): string 
         <span class="close card-close">&times;</span>
         <div class="content-wrap">
           <div class="card-content">${content}</div>
-          <div class="card-author">Added by <span>choisohyun</span></div>
+          <div class="card-author">Added by <span>${user}</span></div>
         </div>
       </div>
     `;
