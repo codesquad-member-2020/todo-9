@@ -18,11 +18,10 @@ class MoveCard {
     this.destColumn = null;
   }
 
-  isAbove(nodeA: HTMLElement, nodeB: HTMLElement) {
-    const rectA = nodeA.getBoundingClientRect();
-    const rectB = nodeB.getBoundingClientRect();
-
-    return rectA.top + rectA.height / 2 < rectB.top + rectB.height / 2;
+  isAbove(draggingCard: HTMLElement, destHeight: number) {
+    const half = draggingCard.offsetHeight / 2;
+    console.log(half, destHeight);
+    return half > destHeight;
   }
 
   dragStartEventHandler({ target }: Event) {
@@ -35,21 +34,21 @@ class MoveCard {
     evt.preventDefault();
   }
 
-  dragEnterEventHandler({ toElement }: Event) {
+  dragEnterEventHandler({ toElement, offsetY }: Event) {
     this.destCard = toElement.closest(".card");
     this.destColumn = toElement.closest(".column");
     this.draggingCard!.classList.add("placeholder");
 
-    if (this.destCard && this.isAbove(this.draggingCard!, this.destCard)) {
-      this.destCard.before(this.draggingCard!);
-    } else if (this.destCard && this.isAbove(this.destCard, this.draggingCard!)) {
+    if (this.destCard && this.isAbove(this.draggingCard!, offsetY)) {
       this.destCard.after(this.draggingCard!);
+    } else if (this.destCard && !this.isAbove(this.draggingCard!, offsetY)) {
+      this.destCard.before(this.draggingCard!);
     } else if (this.destColumn) {
       this.destColumn!.querySelector(".card-list-wrap")?.appendChild(this.draggingCard!);
     }
   }
 
-  dragEndEventHandler({ target }: Event) {
+  dragEndEventHandler() {
     this.draggingCard!.style.opacity = "";
     this.draggingCard!.classList.remove("placeholder");
     this.saveMoveCardInfo();
