@@ -1,6 +1,7 @@
 .activity {
   width: 340px;
   height: 100%;
+  top: 40px;
   background: white;
   position: fixed;
   z-index: 1;

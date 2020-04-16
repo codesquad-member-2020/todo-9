@@ -72,7 +72,7 @@ class EditNote extends Modal {
     fetchRequest(cvtURI, METHOD.PUT, body)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        this.activity.appendActivity(data);
       });
   }
 
