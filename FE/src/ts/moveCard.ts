@@ -1,10 +1,17 @@
+import fetchRequest from "./common/fetchRequest";
+import Activity from "./activity";
+import { METHOD } from "./common/constants";
+import { SERVICE_URL, MOVE_URI } from "./common/configs";
+
 class MoveCard {
+  private activity: Activity;
   private draggingCard: HTMLElement | null;
   private destCard: HTMLElement | null;
   private startColumn: HTMLElement | null;
   private destColumn: HTMLElement | null;
 
-  constructor() {
+  constructor(activity: Activity) {
+    this.activity = activity;
     this.draggingCard = null;
     this.destCard = null;
     this.startColumn = null;
@@ -21,7 +28,7 @@ class MoveCard {
   dragStartEventHandler({ target }: Event) {
     this.draggingCard = <HTMLElement>target;
     this.draggingCard.style.opacity = "0.5";
-    this.startColumn = this.draggingCard.closest(".project-columns");
+    this.startColumn = this.draggingCard.closest(".column");
   }
 
   dragOverEventHandler(evt: Event) {
@@ -30,7 +37,7 @@ class MoveCard {
 
   dragEnterEventHandler({ toElement }: Event) {
     this.destCard = toElement.closest(".card");
-    this.destColumn = toElement.closest(".project-columns");
+    this.destColumn = toElement.closest(".column");
     this.draggingCard!.classList.add("placeholder");
 
     if (this.destCard && this.isAbove(this.draggingCard!, this.destCard)) {
@@ -45,6 +52,16 @@ class MoveCard {
   dragEndEventHandler({ target }: Event) {
     this.draggingCard!.style.opacity = "";
     this.draggingCard!.classList.remove("placeholder");
+    this.saveMoveCardInfo();
+  }
+
+  saveMoveCardInfo() {
+    const columnKey = this.draggingCard?.dataset.cardKey;
+    const boardKey = this.startColumn!.dataset.columnKey;
+    const body = {
+      afterColumnKey: this.destCard?.dataset.cardKey,
+      afterBoardKey: this.destColumn?.dataset.columnKey,
+    };
   }
 }
 
