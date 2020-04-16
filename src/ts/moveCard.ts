@@ -34,9 +34,9 @@ class MoveCard {
     evt.preventDefault();
   }
 
-  dragEnterEventHandler({ toElement, offsetY }: Event) {
-    this.destCard = toElement.closest(".card");
-    this.destColumn = toElement.closest(".column");
+  dragEnterEventHandler({ target, offsetY }: DragEvent) {
+    this.destCard = (<HTMLElement>target).closest(".card");
+    this.destColumn = (<HTMLElement>target).closest(".column");
     this.draggingCard!.classList.add("placeholder");
 
     if (this.destCard && this.isAbove(this.draggingCard!, offsetY)) {
@@ -70,6 +70,7 @@ class MoveCard {
       afterColumnKey: this.destCard?.dataset.cardKey,
       afterBoardKey: this.destColumn?.dataset.columnKey,
     };
+    console.log(columnKey, boardKey, body);
 
     this.requestMoveCard(boardKey!, columnKey!, body);
   }
