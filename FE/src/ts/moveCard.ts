@@ -5,7 +5,7 @@ import { SERVICE_URL, MOVE_URI } from "./common/configs";
 import { REFRESH_MESSAGE } from "./common/confirmMessage";
 
 class MoveCard {
-  private activity: Activity;
+  protected activity: Activity;
   private draggingCard: HTMLElement | null;
   private destCard: HTMLElement | null;
   private startColumn: HTMLElement | null;
