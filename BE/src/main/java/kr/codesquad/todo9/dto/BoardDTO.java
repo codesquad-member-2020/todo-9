@@ -1,7 +1,6 @@
 package kr.codesquad.todo9.dto;
 
 import kr.codesquad.todo9.domain.Board;
-import kr.codesquad.todo9.domain.Column;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,15 +9,15 @@ public class BoardDTO {
 
     private Long id;
     private String name;
-    private List<Column> columns = new ArrayList<>();
+    private List<ColumnDTO> columns = new ArrayList<>();
     private List<LogDTO> logs = new ArrayList<>();
 
     public BoardDTO() {}
 
-    public BoardDTO(Board board, List<LogDTO> logs) {
+    public BoardDTO(Board board, List<ColumnDTO> columns, List<LogDTO> logs) {
         this.id = board.getId();
         this.name = board.getName();
-        this.columns = board.getColumns();
+        this.columns = columns;
         this.logs = logs;
     }
 
@@ -38,11 +37,11 @@ public class BoardDTO {
         this.name = name;
     }
 
-    public List<Column> getColumns() {
+    public List<ColumnDTO> getColumns() {
         return columns;
     }
 
-    public void setColumns(List<Column> columns) {
+    public void setColumns(List<ColumnDTO> columns) {
         this.columns = columns;
     }
 
