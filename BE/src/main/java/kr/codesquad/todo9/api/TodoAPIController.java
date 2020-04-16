@@ -2,8 +2,11 @@ package kr.codesquad.todo9.api;
 
 import kr.codesquad.todo9.domain.Board;
 import kr.codesquad.todo9.domain.Column;
+import kr.codesquad.todo9.dto.BoardDTO;
+import kr.codesquad.todo9.dto.LogDTO;
 import kr.codesquad.todo9.error.exception.BoardNotFoundException;
 import kr.codesquad.todo9.repository.BoardRepository;
+import kr.codesquad.todo9.repository.LogRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +22,11 @@ public class TodoAPIController {
     private static final Long defaultBoardId = 1L;
 
     private final BoardRepository boardRepository;
+    private final LogRepository logRepository;
 
-    public TodoAPIController(BoardRepository boardRepository) {
+    public TodoAPIController(BoardRepository boardRepository, LogRepository logRepository) {
         this.boardRepository = boardRepository;
+        this.logRepository = logRepository;
     }
 
     @GetMapping("/board/{boardId}/column/list")
@@ -37,14 +42,16 @@ public class TodoAPIController {
     }
 
     @GetMapping("/board/{boardId}")
-    public Board showBoard(@PathVariable Long boardId) {
+    public BoardDTO showBoard(@PathVariable Long boardId) {
         Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).sortBoard();
-        log.debug("board: {}", board);
-        return board;
+        List<LogDTO> logs = logRepository.getLogDTOList(defaultBoardId);
+        BoardDTO boardDTO = new BoardDTO(board, logs);
+        log.debug("boardDTO: {}", boardDTO);
+        return boardDTO;
     }
 
     @GetMapping("/board")
-    public Board showBoard() {
+    public BoardDTO showBoard() {
         return showBoard(defaultBoardId);
     }
 
