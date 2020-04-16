@@ -2,6 +2,7 @@ import fetchRequest from "./common/fetchRequest";
 import Activity from "./activity";
 import { METHOD } from "./common/constants";
 import { SERVICE_URL, MOVE_URI } from "./common/configs";
+import { REFRESH_MESSAGE } from "./common/confirmMessage";
 
 class MoveCard {
   private activity: Activity;
@@ -20,7 +21,6 @@ class MoveCard {
 
   isAbove(draggingCard: HTMLElement, destHeight: number) {
     const half = draggingCard.offsetHeight / 2;
-    console.log(half, destHeight);
     return half > destHeight;
   }
 
@@ -51,6 +51,7 @@ class MoveCard {
   dragEndEventHandler() {
     this.draggingCard!.style.opacity = "";
     this.draggingCard!.classList.remove("placeholder");
+
     this.renderCardCount();
     this.saveMoveCardInfo();
   }
@@ -81,6 +82,10 @@ class MoveCard {
       .then((response) => response.json())
       .then((data) => {
         this.activity.appendActivity(data);
+      })
+      .catch((error) => {
+        alert(REFRESH_MESSAGE);
+        console.error(error);
       });
   }
 }
