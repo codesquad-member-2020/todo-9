@@ -65,8 +65,9 @@ public class Board {
         Card card = fromColumn.getCards().get(columnKey);
 
         this.addLog("move", "card", user, card.getContents(), card.getId(), fromColumn.getId(), toColumn.getId());
+        int revertSize = toColumn.getCards().size() - 1;
         fromColumn.getCards().remove(card);
-        toColumn.getCards().add(moveCardObject.getAfterColumnKey(), card);
+        toColumn.getCards().add(revertSize - moveCardObject.getAfterColumnKey(), card);
         card.setUpdatedAt(LocalDateTime.now());
         card.setUpdatedUserId(user.getId());
     }
