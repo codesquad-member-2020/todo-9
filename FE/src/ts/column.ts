@@ -19,15 +19,13 @@ import { METHOD } from "./common/constants";
 import { MoveCard } from "./moveCard";
 
 class Column extends MoveCard implements IView {
-  private activity: Activity;
   private editNote: EditNote;
   private editColumn: EditColumn;
   private placeHolderVisible: boolean;
   private inputValue: string;
 
   constructor(activity: Activity, editNote: EditNote, editColumn: EditColumn) {
-    super();
-    this.activity = activity;
+    super(activity);
     this.editNote = editNote;
     this.editColumn = editColumn;
     this.placeHolderVisible = false;
@@ -51,7 +49,7 @@ class Column extends MoveCard implements IView {
       }
     });
 
-    qs$(".menu").addEventListener("click", (evt: Event) =>{
+    qs$(".menu").addEventListener("click", (evt: Event) => {
       this.menuBtnClickEventHandler(evt);
     });
 
@@ -61,8 +59,8 @@ class Column extends MoveCard implements IView {
       }
     });
     document.addEventListener("dragover", (evt: Event) => this.dragOverEventHandler(evt));
-    document.addEventListener("dragenter", (evt: Event) => this.dragEnterEventHandler(evt));
-    document.addEventListener("dragend", (evt: Event) => this.dragEndEventHandler(evt));
+    document.addEventListener("dragenter", (evt: DragEvent) => this.dragEnterEventHandler(evt));
+    document.addEventListener("dragend", () => this.dragEndEventHandler());
 
     document.body.addEventListener(
       "click",
@@ -142,7 +140,7 @@ class Column extends MoveCard implements IView {
     const input: any = clickColumn.querySelector("#card-input");
     const cardCount: any = clickColumn.querySelector(".card-count");
     const boardKey = clickColumn.getAttribute("data-column-key");
-    
+
     let requestURI: string = <string>(SERVICE_URL + ADD_URI);
     const cvtURI = requestURI.replace("{boardKey}", boardKey);
     const body: any = { contents: input.value };
