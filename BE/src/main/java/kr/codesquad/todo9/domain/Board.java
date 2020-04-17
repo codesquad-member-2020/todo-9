@@ -63,9 +63,7 @@ public class Board {
         Column fromColumn = this.columns.get(boardKey);
         Column toColumn = this.columns.get(moveCardObject.getAfterBoardKey());
         List<Card> fromColumnCards = fromColumn.getCards();
-
         int fromColumnCardsSize = fromColumnCards.size();
-        int revertSize = toColumn.getCards().size() - 1 - moveCardObject.getAfterColumnKey();
 
         // 제일 위에 있는 항목을 선택하기 위한 코드
         columnKey = fromColumnCardsSize > columnKey ? columnKey : fromColumnCardsSize - 1;
@@ -73,8 +71,10 @@ public class Board {
 
         this.addLog("move", "card", user, card.getContents(), card.getId(), fromColumn.getId(), toColumn.getId());
 
+        log.debug("afterColumnKey: {}", moveCardObject.getAfterColumnKey());
+        log.debug("toColumnCards: {}", toColumn.getCards());
         fromColumnCards.remove(card);
-        toColumn.getCards().add(Math.max(revertSize, 0), card);
+        toColumn.getCards().add(Math.max(moveCardObject.getAfterColumnKey(), 0), card);
         card.setUpdatedAt(LocalDateTime.now());
         card.setUpdatedUserId(user.getId());
     }
