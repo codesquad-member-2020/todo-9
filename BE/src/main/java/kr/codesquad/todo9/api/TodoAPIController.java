@@ -3,6 +3,7 @@ package kr.codesquad.todo9.api;
 import kr.codesquad.todo9.domain.Board;
 import kr.codesquad.todo9.domain.Column;
 import kr.codesquad.todo9.dto.BoardDTO;
+import kr.codesquad.todo9.dto.CardDTO;
 import kr.codesquad.todo9.dto.ColumnDTO;
 import kr.codesquad.todo9.dto.LogDTO;
 import kr.codesquad.todo9.error.exception.BoardNotFoundException;
@@ -54,7 +55,13 @@ public class TodoAPIController {
         List<ColumnDTO> columns = new ArrayList<>();
         for (Column column : board.getColumns()) {
             ColumnDTO columnDTO = new ColumnDTO(column);
-            columnDTO.setCards(cardRepository.getCardList(columnDTO.getId()));
+            List<CardDTO> cardList = new ArrayList<>();
+            for (CardDTO cardDTO : cardRepository.getCardList(columnDTO.getId())) {
+                if (!cardDTO.getArchived()) {
+                    cardList.add(cardDTO);
+                }
+            }
+            columnDTO.setCards(cardList);
             columns.add(columnDTO);
         }
         List<LogDTO> logs = logRepository.getLogDTOList(defaultBoardId);
