@@ -163,7 +163,7 @@ class Column extends MoveCard implements IView {
           "afterbegin",
           cardTemplate(cardId, cardKey, this.inputValue, data.user.username)
         );
-        cardCount.innerText = cardId;
+        cardCount.innerText = parseInt(cardCount.innerText) + 1;
 
         input.value = null;
         input.focus();
