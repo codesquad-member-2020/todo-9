@@ -68,12 +68,22 @@ class MoveCard {
     const columnKey = this.draggingCard?.dataset.cardKey;
     const boardKey = this.startColumn!.dataset.columnKey;
     const body = {
-      afterColumnKey: this.destCard?.dataset.cardKey,
+      afterColumnKey: this.getAfterColumnKey(),
       afterBoardKey: this.destColumn?.dataset.columnKey,
     };
-    console.log(columnKey, boardKey, body);
 
     this.requestMoveCard(boardKey!, columnKey!, body);
+  }
+
+  getAfterColumnKey() {
+    if (!this.draggingCard?.nextElementSibling) {
+      return "0";
+    }
+
+    const nextCard: Element = this.draggingCard?.nextElementSibling;
+    const afterColumnKey: string = (parseInt(nextCard.dataset.cardKey) - 1).toString();
+
+    return afterColumnKey;
   }
 
   requestMoveCard(boardKey: string, columnKey: string, body: any) {
