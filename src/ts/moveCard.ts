@@ -1,4 +1,5 @@
 import fetchRequest from "./common/fetchRequest";
+import updateDataset from "./updateDataset";
 import Activity from "./activity";
 import { METHOD } from "./common/constants";
 import { SERVICE_URL, MOVE_URI } from "./common/configs";
@@ -82,6 +83,7 @@ class MoveCard {
     fetchRequest(cvtURI, METHOD.PATCH, body)
       .then((response) => response.json())
       .then((data) => {
+        updateDataset(data);
         this.activity.appendActivity(data);
       })
       .catch((error) => {
