@@ -148,13 +148,10 @@ class Column extends MoveCard implements IView {
     fetchRequest(cvtURI, METHOD.POST, body)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         const cardId: string = data.afterCard.id;
         const cardKey: string = data.afterCard.columnKey;
 
-        console.log(cardId, cardKey);
-
-        cardList?.insertAdjacentHTML("afterbegin", cardTemplate(cardId, cardKey, this.inputValue));
+        cardList?.insertAdjacentHTML("afterbegin", cardTemplate(cardId, cardKey, this.inputValue, data.user.username));
         cardCount.innerText = cardId;
 
         input.value = null;
