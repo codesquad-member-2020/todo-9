@@ -13,7 +13,7 @@ import {
   cardTemplate,
 } from "./columnTemplate";
 import { qs$, qsAll$, addClass, removeClass } from "./lib/util";
-import { DELETE_MESSAGE } from "./common/confirmMessage";
+import { DELETE_MESSAGE, REFRESH_MESSAGE } from "./common/confirmMessage";
 import fetchRequest from "./common/fetchRequest";
 import { SERVICE_URL, ADD_URI, DELETE_DATA_URI } from "./common/configs";
 import { METHOD } from "./common/constants";
@@ -104,6 +104,9 @@ class Column extends MoveCard implements IView {
       .then((data) => {
         updateDataset(data);
         this.activity.appendActivity(data);
+      })
+      .catch((error) => {
+        alert(REFRESH_MESSAGE);
       });
   }
 
