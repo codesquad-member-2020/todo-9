@@ -4,6 +4,7 @@ import Modal from "./modal";
 import fetchRequest from "./common/fetchRequest";
 import { SERVICE_URL, INIT_DATA_URI, EDIT_DATA_URI } from "./common/configs";
 import { METHOD } from "./common/constants";
+import { REFRESH_MESSAGE } from "./common/confirmMessage";
 
 class EditNote extends Modal {
   private activity: Activity;
@@ -73,6 +74,9 @@ class EditNote extends Modal {
       .then((response) => response.json())
       .then((data) => {
         this.activity.appendActivity(data);
+      })
+      .catch((error) => {
+        alert(REFRESH_MESSAGE);
       });
   }
 
