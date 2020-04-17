@@ -2,11 +2,11 @@ package kr.codesquad.todo9.todo.api;
 
 import kr.codesquad.todo9.common.error.exception.BoardNotFoundException;
 import kr.codesquad.todo9.todo.domain.board.Board;
-import kr.codesquad.todo9.todo.domain.card.Card;
-import kr.codesquad.todo9.todo.domain.user.User;
-import kr.codesquad.todo9.todo.domain.log.LogDTO;
 import kr.codesquad.todo9.todo.domain.board.BoardRepository;
+import kr.codesquad.todo9.todo.domain.card.Card;
+import kr.codesquad.todo9.todo.domain.log.LogDTO;
 import kr.codesquad.todo9.todo.domain.log.LogRepository;
+import kr.codesquad.todo9.todo.domain.user.User;
 import kr.codesquad.todo9.todo.requestobject.ContentsObject;
 import kr.codesquad.todo9.todo.requestobject.MoveCardObject;
 import org.slf4j.Logger;
@@ -71,17 +71,17 @@ public class CardAPIController {
     @PostMapping("/column/{boardKey}/card")
     @Transactional
     public LogDTO addCard(HttpServletRequest request,
-                         @PathVariable int boardKey,
-                         @RequestBody @Valid ContentsObject contentsObject) {
+                          @PathVariable int boardKey,
+                          @RequestBody @Valid ContentsObject contentsObject) {
         return addCard(request, DEFAULT_BOARD_ID, boardKey, contentsObject);
     }
 
     @PutMapping("/board/{boardId}/column/{boardKey}/card/{columnKey}")
     public LogDTO editCard(HttpServletRequest request,
-                          @PathVariable Long boardId,
-                          @PathVariable int boardKey,
-                          @PathVariable int columnKey,
-                          @RequestBody @Valid ContentsObject contentsObject) {
+                           @PathVariable Long boardId,
+                           @PathVariable int boardKey,
+                           @PathVariable int columnKey,
+                           @RequestBody @Valid ContentsObject contentsObject) {
         User user = (User) request.getAttribute("user");
         log.debug("firstUser: {}", user);
 
@@ -96,17 +96,17 @@ public class CardAPIController {
 
     @PutMapping("/column/{boardKey}/card/{columnKey}")
     public LogDTO editCard(HttpServletRequest request,
-                          @PathVariable int boardKey,
-                          @PathVariable int columnKey,
-                          @RequestBody @Valid ContentsObject contentsObject) {
+                           @PathVariable int boardKey,
+                           @PathVariable int columnKey,
+                           @RequestBody @Valid ContentsObject contentsObject) {
         return this.editCard(request, DEFAULT_BOARD_ID, boardKey, columnKey, contentsObject);
     }
 
     @DeleteMapping("/board/{boardId}/column/{boardKey}/card/{columnKey}")
     public LogDTO deleteCard(HttpServletRequest request,
-                            @PathVariable Long boardId,
-                            @PathVariable int boardKey,
-                            @PathVariable int columnKey) {
+                             @PathVariable Long boardId,
+                             @PathVariable int boardKey,
+                             @PathVariable int columnKey) {
         User user = (User) request.getAttribute("user");
         log.debug("firstUser: {}", user);
 
@@ -126,10 +126,10 @@ public class CardAPIController {
 
     @PatchMapping("/board/{boardId}/column/{boardKey}/card/{columnKey}")
     public LogDTO moveCard(HttpServletRequest request,
-                          @PathVariable Long boardId,
-                          @PathVariable int boardKey,
-                          @PathVariable int columnKey,
-                          @RequestBody MoveCardObject moveCardObject) {
+                           @PathVariable Long boardId,
+                           @PathVariable int boardKey,
+                           @PathVariable int columnKey,
+                           @RequestBody MoveCardObject moveCardObject) {
         User user = (User) request.getAttribute("user");
         log.debug("firstUser: {}", user);
 
