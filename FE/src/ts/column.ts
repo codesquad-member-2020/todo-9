@@ -4,6 +4,7 @@ import IView from "./view";
 import Activity from "./Activity";
 import EditNote from "./editnote";
 import EditColumn from "./editcolumn";
+import updateDataset from "./updateDataset";
 import {
   getColumnWrap,
   getColumnHeader,
@@ -101,6 +102,7 @@ class Column extends MoveCard implements IView {
     fetchRequest(cvtURI, METHOD.DELETE)
       .then((response) => response.json())
       .then((data) => {
+        updateDataset(data);
         this.activity.appendActivity(data);
       });
   }
@@ -151,7 +153,10 @@ class Column extends MoveCard implements IView {
         const cardId: string = data.afterCard.id;
         const cardKey: string = data.afterCard.columnKey;
 
-        cardList?.insertAdjacentHTML("afterbegin", cardTemplate(cardId, cardKey, this.inputValue, data.user.username));
+        cardList?.insertAdjacentHTML(
+          "afterbegin",
+          cardTemplate(cardId, cardKey, this.inputValue, data.user.username)
+        );
         cardCount.innerText = cardId;
 
         input.value = null;
