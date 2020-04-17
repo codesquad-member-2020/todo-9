@@ -6,6 +6,7 @@ import updateDataset from "./updateDataset";
 import { SERVICE_URL, INIT_DATA_URI, EDIT_DATA_URI } from "./common/configs";
 import { METHOD } from "./common/constants";
 import { REFRESH_MESSAGE } from "./common/confirmMessage";
+import { qs$ } from "./lib/util";
 
 class EditNote extends Modal {
   private activity: Activity;
@@ -102,15 +103,25 @@ class EditNote extends Modal {
 
   inputHandler(evt: Event): void {
     //Todo: 객체 탐색하는 코드 없애보기. (렌더링 후 캐싱 등을 통해서)
+    const userInput: string = (<HTMLInputElement>evt.target).value;
+    const length: number = userInput.length;
+    const saveButtonEnabled: boolean = length > 0 ? true : false
+
+    this.changeSaveButtonEnabled(!saveButtonEnabled);
+  }
+
+  private changeSaveButtonEnabled(disabled: any): void {
     const modal = <Element>document.querySelector("." + this.className);
     const saveButton: any = <HTMLElement>modal?.querySelector(".save-button");
-    const length = (<HTMLInputElement>evt.target).value.length;
 
-    if (!length) {
-      saveButton.disabled = true;
-    } else {
-      saveButton.disabled = false;
-    }
+    saveButton.disabled = disabled;
+  }
+
+  public showModal(columnId: string, cardId: string, content: any, contentElement: Element): void {
+    super.showModal(columnId, cardId, content, contentElement);
+
+    qs$(".text-area").focus();
+    this.changeSaveButtonEnabled(!content.length);
   }
 }
 
