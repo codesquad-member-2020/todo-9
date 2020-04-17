@@ -122,7 +122,10 @@ class Column extends MoveCard implements IView {
       const card: Element = <Element>target.closest(".card");
       const cardWrap: Element = <Element>target.closest(".card-list-wrap");
       const column: Element = <Element>target.closest(".column");
+      const cardCount: any = <Element>column.querySelector(".card-count");
+
       cardWrap.removeChild(card);
+      cardCount.innerHTML = parseInt(cardCount.innerHTML) - 1;
 
       const columnKey = card.getAttribute("data-card-key");
       const boardKey = column.getAttribute("data-column-key");
