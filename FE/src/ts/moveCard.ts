@@ -72,6 +72,10 @@ class MoveCard {
       afterBoardKey: this.destColumn?.dataset.columnKey,
     };
 
+    if (boardKey === body.afterBoardKey) {
+      body.afterColumnKey--;
+    }
+
     this.requestMoveCard(boardKey!, columnKey!, body);
   }
 
@@ -81,7 +85,7 @@ class MoveCard {
     }
 
     const nextCard: Element = this.draggingCard?.nextElementSibling;
-    const afterColumnKey: string = (parseInt(nextCard.dataset.cardKey) - 1).toString();
+    const afterColumnKey: number = parseInt(nextCard.dataset.cardKey) + 1;
 
     return afterColumnKey;
   }
@@ -89,6 +93,7 @@ class MoveCard {
   requestMoveCard(boardKey: string, columnKey: string, body: any) {
     let requestURI: string = <string>(SERVICE_URL + MOVE_URI);
     const cvtURI = requestURI.replace("{boardKey}", boardKey).replace("{columnKey}", columnKey);
+    console.log(cvtURI, body);
 
     fetchRequest(cvtURI, METHOD.PATCH, body)
       .then((response) => response.json())
