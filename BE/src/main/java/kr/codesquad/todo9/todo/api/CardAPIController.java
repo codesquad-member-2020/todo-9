@@ -1,17 +1,13 @@
 package kr.codesquad.todo9.todo.api;
 
-import kr.codesquad.todo9.common.error.exception.BoardNotFoundException;
-import kr.codesquad.todo9.todo.domain.board.Board;
-import kr.codesquad.todo9.todo.domain.board.BoardRepository;
 import kr.codesquad.todo9.todo.domain.card.Card;
 import kr.codesquad.todo9.todo.domain.log.LogDTO;
-import kr.codesquad.todo9.todo.domain.log.LogRepository;
 import kr.codesquad.todo9.todo.domain.user.User;
 import kr.codesquad.todo9.todo.requestobject.ContentsObject;
 import kr.codesquad.todo9.todo.requestobject.MoveCardObject;
+import kr.codesquad.todo9.todo.service.card.CardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,19 +20,13 @@ public class CardAPIController {
     private static final Logger log = LoggerFactory.getLogger(CardAPIController.class);
     private static final Long DEFAULT_BOARD_ID = 1L;
 
-    private final BoardRepository boardRepository;
-    private final LogRepository logRepository;
+    private final CardService cardService;
 
-    public CardAPIController(BoardRepository boardRepository, LogRepository logRepository) {
-        this.boardRepository = boardRepository;
-        this.logRepository = logRepository;
-    }
+    public CardAPIController(CardService cardService) {this.cardService = cardService;}
 
     @GetMapping("/board/{boardId}/column/{boardKey}/card/list")
     public List<Card> showCardListOfColumnOfBoard(@PathVariable Long boardId, @PathVariable int boardKey) {
-        Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new).sortBoard();
-        log.debug("board: {}", board);
-        return board.getColumns().get(boardKey).getCards();
+        return cardService.getCardList(boardId, boardKey);
     }
 
     @GetMapping("/column/{boardKey}/card/list")
@@ -45,31 +35,16 @@ public class CardAPIController {
     }
 
     @PostMapping("/board/{boardId}/column/{boardKey}/card")
-    @Transactional
     public LogDTO addCard(HttpServletRequest request,
                           @PathVariable Long boardId,
                           @PathVariable int boardKey,
                           @RequestBody @Valid ContentsObject contentsObject) {
         User user = (User) request.getAttribute("user");
         log.debug("firstUser: {}", user);
-
-        Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
-        log.debug("board: {}", board);
-
-        String contents = contentsObject.getContents();
-
-        board.addCard(boardKey, contents, user);
-        boardRepository.save(board);
-        log.debug("save after board: {}", board);
-
-        board.addLog("create", "card", user, contents, boardKey);
-        board = boardRepository.save(board);
-        log.debug("save log after board: {}", board);
-        return logRepository.getLogDTO(board.getId(), board.getLastLog().getId());
+        return cardService.addCard(boardId, boardKey, user, contentsObject);
     }
 
     @PostMapping("/column/{boardKey}/card")
-    @Transactional
     public LogDTO addCard(HttpServletRequest request,
                           @PathVariable int boardKey,
                           @RequestBody @Valid ContentsObject contentsObject) {
@@ -84,14 +59,7 @@ public class CardAPIController {
                            @RequestBody @Valid ContentsObject contentsObject) {
         User user = (User) request.getAttribute("user");
         log.debug("firstUser: {}", user);
-
-        Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
-        log.debug("board: {}", board);
-
-        board.updateCard(boardKey, columnKey, contentsObject.getContents(), user);
-        board = boardRepository.save(board);
-        log.debug("save after board: {}", board);
-        return logRepository.getLogDTO(board.getId(), board.getLastLog().getId());
+        return cardService.editCard(boardId, boardKey, columnKey, user, contentsObject);
     }
 
     @PutMapping("/column/{boardKey}/card/{columnKey}")
@@ -109,14 +77,7 @@ public class CardAPIController {
                              @PathVariable int columnKey) {
         User user = (User) request.getAttribute("user");
         log.debug("firstUser: {}", user);
-
-        Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
-        log.debug("board: {}", board);
-
-        board.deleteCard(boardKey, columnKey, user);
-        board = boardRepository.save(board);
-        log.debug("save after board: {}", board);
-        return logRepository.getLogDTO(board.getId(), board.getLastLog().getId());
+        return cardService.deleteCard(boardId, boardKey, columnKey, user);
     }
 
     @DeleteMapping("/column/{boardKey}/card/{columnKey}")
@@ -132,14 +93,7 @@ public class CardAPIController {
                            @RequestBody MoveCardObject moveCardObject) {
         User user = (User) request.getAttribute("user");
         log.debug("firstUser: {}", user);
-
-        Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
-        log.debug("board: {}", board);
-
-        board.moveCard(boardKey, columnKey, user, moveCardObject);
-        board = boardRepository.save(board);
-        log.debug("save after board: {}", board);
-        return logRepository.getLogDTO(board.getId(), board.getLastLog().getId());
+        return cardService.moveCard(boardId, boardKey, columnKey, user, moveCardObject);
     }
 
     @PatchMapping("/column/{boardKey}/card/{columnKey}")
