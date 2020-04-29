@@ -22,30 +22,32 @@ import {
   DELETE_DATA_URI,
 } from "./common/configs";
 import { METHOD } from "./common/constants";
+import TodoDataModel from "./tododatamodel";
+import { MoveCard } from "./moveCard";
 import { mouseDownHandler } from "./drag";
 
-class Column implements IView {
+class Column extends MoveCard implements IView {
   private activity: Activity;
   private editNote: EditNote;
   private editColumn: EditColumn;
   private placeHolderVisible: boolean;
   private inputValue: string;
-  private dragged: Node | null;
+  private todoDataModel: TodoDataModel = TodoDataModel.getInstance();
 
   constructor(activity: Activity, editNote: EditNote, editColumn: EditColumn) {
+    super();
     this.activity = activity;
     this.editNote = editNote;
     this.editColumn = editColumn;
     this.placeHolderVisible = false;
     this.inputValue = "";
-    this.dragged = null;
   }
 
   render(): string {
     return getColumnWrap();
   }
 
-  registerEventListener(): void {
+  registerEventListener = (): void => {
     qs$(".column-wrap").addEventListener("click", ({ target }: Event) => {
       const clickColumn: any = (<HTMLInputElement>target).closest(".column");
 
@@ -58,11 +60,14 @@ class Column implements IView {
       }
     });
 
-    qs$(".column-wrap").addEventListener("mousedown", (evt: Event) => {
-      if (evt.target!.className === "card") {
-        mouseDownHandler(evt);
+    document.addEventListener("dragstart", (evt: Event) => {
+      if ((<HTMLInputElement>evt.target).className === "card") {
+        this.dragStartEventHandler(evt);
       }
     });
+    document.addEventListener("dragover", (evt: Event) => this.dragOverEventHandler(evt));
+    document.addEventListener("dragenter", (evt: Event) => this.dragEnterEventHandler(evt));
+    document.addEventListener("dragend", (evt: Event) => this.dragEndEventHandler(evt));
 
     document.body.addEventListener(
       "click",
@@ -89,7 +94,7 @@ class Column implements IView {
     qs$(".column-wrap").addEventListener("input", (evt: Event) => {
       this.inputEventHandler(evt);
     });
-  }
+  };
 
   showConfirm(message: string): boolean {
     const result = confirm(message);
@@ -171,9 +176,9 @@ class Column implements IView {
       addClass(cardInput, "hidden");
       this.setPlaceholderVisible(true);
       input.value = null;
-
       return;
     }
+
     removeClass(cardInput, "hidden");
     this.setPlaceholderVisible(false);
     input.focus();
